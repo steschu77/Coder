@@ -397,9 +397,6 @@ LRESULT WinRaster::onMouseWheel(int, int, uint, uint)
 }
 
 // ----------------------------------------------------------------------------
-std::vector<gfx::TextChar> tokenizeLine(const std::string& line);
-
-// ----------------------------------------------------------------------------
 void WinRaster::onDocumentDirty()
 {
   _updateState();
@@ -479,10 +476,11 @@ void WinRaster::_ensureCursorVisibility()
 }
 
 // ----------------------------------------------------------------------------
-std::vector<gfx::TextChar> renderSearchResults(const SearchEngine& Search, size_t line, std::vector<gfx::TextChar>& text);
+void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line);
+void renderSearchResults(std::vector<gfx::TextChar>& text, const SearchEngine& Search, size_t line);
 
 // ----------------------------------------------------------------------------
-std::vector<gfx::TextChar> hilightSelection(size_t line, std::vector<gfx::TextChar>& text, const TextDocument* pDoc)
+void renderTextSelection(std::vector<gfx::TextChar>& text, size_t line, const TextDocument* pDoc)
 {
   if (pDoc->hasSelectedText(line))
   {
@@ -495,8 +493,6 @@ std::vector<gfx::TextChar> hilightSelection(size_t line, std::vector<gfx::TextCh
       }
     }
   }
-
-  return text;
 }
 
 // ----------------------------------------------------------------------------
@@ -574,14 +570,16 @@ void WinRaster::_updateCanvas(const RenderState& State)
       }
 
       const std::string strLine = pDoc->getLine(yDoc);
+      const size_t cLength = strLine.length();
 
-      if (strLine.length() > xOfs)
+      if (cLength > xOfs)
       {
-        std::vector<gfx::TextChar> txtLine0 = tokenizeLine(strLine);
-        std::vector<gfx::TextChar> txtLine1 = hilightSelection(y+yOfs, txtLine0, pDocument);
-        std::vector<gfx::TextChar> txtLine2 = renderSearchResults(Search, y+yOfs, txtLine1);
+        std::vector<gfx::TextChar> tl(cLength + 1);
+        renderSyntaxHilighting(tl, strLine);
+        renderTextSelection(tl, y+yOfs, pDocument);
+        renderSearchResults(tl, Search, y+yOfs);
 
-        pCanvas->drawText(0, _Height*y, &txtLine2[xOfs], *_pFont);
+        pCanvas->drawText(0, _Height*y, &tl[xOfs], *_pFont);
       }
     }
   }

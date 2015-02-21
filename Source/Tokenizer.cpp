@@ -98,7 +98,7 @@ retcode find(const char* s)
 }
 
 // ----------------------------------------------------------------------------
-std::vector<gfx::TextChar> tokenizeLine(const std::string& line)
+void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line)
 {
   uint32 gColors[]
   {
@@ -115,8 +115,6 @@ std::vector<gfx::TextChar> tokenizeLine(const std::string& line)
   size_t idx = 0;
   
   Tokenizer tk(line);
-
-  std::vector<gfx::TextChar> tl(cLength+1);
 
   Tokenizer::token_t t;
   while (tk.nextToken(&t))
@@ -167,8 +165,6 @@ std::vector<gfx::TextChar> tokenizeLine(const std::string& line)
     }
     idx++;
   }
-
-  return tl;
 }
 
 // ----------------------------------------------------------------------------
