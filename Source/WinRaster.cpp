@@ -479,6 +479,9 @@ void WinRaster::_ensureCursorVisibility()
 }
 
 // ----------------------------------------------------------------------------
+std::vector<gfx::TextChar> renderSearchResults(const SearchEngine& Search, size_t line, std::vector<gfx::TextChar>& text);
+
+// ----------------------------------------------------------------------------
 std::vector<gfx::TextChar> hilightSelection(size_t line, std::vector<gfx::TextChar>& text, const TextDocument* pDoc)
 {
   if (pDoc->hasSelectedText(line))
@@ -576,7 +579,7 @@ void WinRaster::_updateCanvas(const RenderState& State)
       {
         std::vector<gfx::TextChar> txtLine0 = tokenizeLine(strLine);
         std::vector<gfx::TextChar> txtLine1 = hilightSelection(y+yOfs, txtLine0, pDocument);
-        std::vector<gfx::TextChar> txtLine2 = Search.filterText(y+yOfs, txtLine0);
+        std::vector<gfx::TextChar> txtLine2 = renderSearchResults(Search, y+yOfs, txtLine1);
 
         pCanvas->drawText(0, _Height*y, &txtLine2[xOfs], *_pFont);
       }

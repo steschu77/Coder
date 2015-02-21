@@ -120,6 +120,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\Source\SearchEngine.cpp" />
+    <ClCompile Include="..\..\Source\SearchResultRenderer.cpp" />
     <ClCompile Include="..\..\Source\TextDoc.cpp" />
     <ClCompile Include="..\..\Source\Tokenizer.cpp" />
     <ClCompile Include="..\..\Source\UTF8ToInt.cpp" />

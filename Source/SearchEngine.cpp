@@ -1,7 +1,6 @@
 #include <Source/Headers.h>
 #include <Source/UTF8Tools.h>
 #include <Source/Document.h>
-#include <Source/Config.h>
 
 #include "SearchEngine.h"
 
@@ -11,23 +10,6 @@ SearchEngine::SearchEngine()
 , _MatchCase(false)
 , SearchResultVersion(0)
 {
-}
-
-// ----------------------------------------------------------------------------
-std::vector<gfx::TextChar> SearchEngine::filterText(size_t line, std::vector<gfx::TextChar>& text) const
-{
-  std::vector<TextPos>::const_iterator i = std::lower_bound(_Results.begin(), _Results.end(), TextPos(line,0));
-
-  size_t cSearch = _Search.length();
-  for (; i != _Results.end() && i->line == line; ++i)
-  {
-    for (size_t j = 0; j < cSearch; j++) {
-      text[i->column + j].background = true;
-      text[i->column + j].colBkg = gfx::blendPixel(gConfig.Colors.bkgFindResult, text[i->column + j].colBkg);
-    }
-  }
-
-  return text;
 }
 
 // ----------------------------------------------------------------------------

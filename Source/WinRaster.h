@@ -14,6 +14,7 @@
 ******************************************************************************/
 #pragma once
 
+#include "Canvas.h"
 #include "SearchEngine.h"
 #include "WinFactory.h"
 
