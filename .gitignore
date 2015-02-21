@@ -1,0 +1,6 @@
+*.bak
+*.suo
+*.vcxproj.user
+*.aps
+*.opensdf
+*.sdf

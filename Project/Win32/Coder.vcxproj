@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{488B195A-D7E5-4B0A-B8A9-B3C59F56F815}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LocalDebuggerCommandArguments>$(SolutionDir)\..\..\Source\Coder.cpp</LocalDebuggerCommandArguments>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\</AdditionalIncludeDirectories>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Source/Headers.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ResourceCompile />
+    <Lib />
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32,_LIB</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>_WIN64,_LIB</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MinSpace</Optimization>
+      <StringPooling>true</StringPooling>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\BaseTypes.h" />
+    <ClInclude Include="..\..\Source\Canvas.h" />
+    <ClInclude Include="..\..\Source\Config.h" />
+    <ClInclude Include="..\..\Source\Document.h" />
+    <ClInclude Include="..\..\Source\FileSystem.h" />
+    <ClInclude Include="..\..\Source\FixedSizeFont.h" />
+    <ClInclude Include="..\..\Source\Headers.h" />
+    <ClInclude Include="..\..\Source\LinuxLib.h" />
+    <ClInclude Include="..\..\Source\Resource.h" />
+    <ClInclude Include="..\..\Source\SearchEngine.h" />
+    <ClInclude Include="..\..\Source\System.h" />
+    <ClInclude Include="..\..\Source\TextDoc.h" />
+    <ClInclude Include="..\..\Source\TextPos.h" />
+    <ClInclude Include="..\..\Source\Tokenizer.h" />
+    <ClInclude Include="..\..\Source\ToolBox.h" />
+    <ClInclude Include="..\..\Source\UTF8Tools.h" />
+    <ClInclude Include="..\..\Source\Win32Lib.h" />
+    <ClInclude Include="..\..\Source\WinCoder.h" />
+    <ClInclude Include="..\..\Source\WinFactory.h" />
+    <ClInclude Include="..\..\Source\WinRaster.h" />
+    <ClInclude Include="..\..\Source\WinSearch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\..\Source\Coder.exe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\Canvas.cpp" />
+    <ClCompile Include="..\..\Source\CharType.cpp" />
+    <ClCompile Include="..\..\Source\Coder.cpp" />
+    <ClCompile Include="..\..\Source\Config.cpp" />
+    <ClCompile Include="..\..\Source\ConvertUTF16.cpp" />
+    <ClCompile Include="..\..\Source\Document.cpp" />
+    <ClCompile Include="..\..\Source\FileSystem.cpp" />
+    <ClCompile Include="..\..\Source\FixedSizeFont.cpp" />
+    <ClCompile Include="..\..\Source\Headers.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SearchEngine.cpp" />
+    <ClCompile Include="..\..\Source\TextDoc.cpp" />
+    <ClCompile Include="..\..\Source\Tokenizer.cpp" />
+    <ClCompile Include="..\..\Source\UTF8ToInt.cpp" />
+    <ClCompile Include="..\..\Source\WinCoder.cpp" />
+    <ClCompile Include="..\..\Source\WinFactory.cpp" />
+    <ClCompile Include="..\..\Source\WinRaster.cpp" />
+    <ClCompile Include="..\..\Source\WinSearch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Source\Coder.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Coder.ico" />
+    <Image Include="..\Coder.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
