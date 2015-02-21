@@ -27,7 +27,9 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup>
-    <LocalDebuggerCommandArguments>$(SolutionDir)\..\..\Source\Coder.cpp</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>$(SolutionDir)..\..\Source\Coder.cpp</LocalDebuggerCommandArguments>
+    <OutDir>$(SolutionDir)..\..\.build\$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\.build\$(Configuration)_$(Platform)\</IntDir>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -35,7 +37,7 @@
   </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\</AdditionalIncludeDirectories>
       <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Source/Headers.h</PrecompiledHeaderFile>
