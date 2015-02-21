@@ -40,6 +40,7 @@ public:
   retcode insert(char ch);
   retcode insertNewLine();
   retcode insertNewLineBefore();
+  retcode insertContent(const TextDoc& doc);
   
   retcode deleteBefore();
   retcode deleteAfter();

@@ -15,6 +15,7 @@ struct TextDoc
   std::vector<std::string> Lines;
   uint Version;
 
+  void setContent(char* lines, size_t Length);
   void setContent(const std::vector<char*>& lines);
 
   size_t getLineCount() const;
@@ -32,6 +33,7 @@ struct TextDoc
   void deleteRangeInLine(size_t line, size_t col0, size_t col1);
 
   TextDoc getContent(const TextPos& p0, const TextPos& p1) const;
+  void insertContent(const TextPos& p, const TextDoc& Content);
 
   void deleteContent(const TextPos& p0, const TextPos& p1);
 };

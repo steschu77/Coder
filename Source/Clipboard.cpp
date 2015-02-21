@@ -45,4 +45,22 @@ retcode pasteTextFromClipboard(HWND hwnd, TextDoc* pDoc)
   if (!OpenClipboard(hwnd)) {
     return rcFailed;
   }
+  HGLOBAL hglb = GetClipboardData(CF_TEXT); 
+  if (hglb != nullptr)
+  {
+    const void* lptstr = GlobalLock(hglb);
+    if (lptstr != nullptr)
+    {
+      size_t Length = GlobalSize(hglb);
+
+      char* pText = new char [Length];
+      memcpy(pText, lptstr, Length);
+
+      pDoc->setContent(pText, Length);
+      delete[] pText;
+
+      GlobalUnlock(hglb);
+    }
+  }
+  CloseClipboard();
 }

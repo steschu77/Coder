@@ -59,27 +59,7 @@ retcode TextDocument::load()
     return rcFileNotFound;
   }
   
-  std::vector<char*> Lines;
-  int SearchMode = 0;
-  
-  for (size_t i = 0; i <= Length; i++)
-  {
-    if (SearchMode == 0) {
-      Lines.push_back(pDoc+i);
-    }
-
-    if (pDoc[i] == '\n') {
-      SearchMode = 0;
-    } else {
-      SearchMode = 1;
-    }
-
-    if (pDoc[i] == '\n' || pDoc[i] == '\r') {
-      pDoc[i] = '\0';
-    }
-  }
-
-  _Doc.setContent(Lines);
+  _Doc.setContent(pDoc, Length);
   _Doc.Version = 0;
   
   delete[] pDoc;
@@ -346,7 +326,13 @@ retcode TextDocument::insertNewLineBefore()
 
   _Doc.insertNewLineBefore(_Cursor.line, indent);
   _Cursor.column = indent;
-  _Cursor.line;
+  return rcSuccess;
+}
+
+// ----------------------------------------------------------------------------
+retcode TextDocument::insertContent(const TextDoc& doc)
+{
+  _Doc.insertContent(_Cursor, doc);
   return rcSuccess;
 }
 

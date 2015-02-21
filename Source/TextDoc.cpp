@@ -11,6 +11,38 @@ TextDoc::TextDoc()
 }
 
 // ----------------------------------------------------------------------------
+void TextDoc::setContent(char* pDoc, size_t Length)
+{
+  Lines.clear();
+
+  if (pDoc == nullptr) {
+    return;
+  }
+
+  std::vector<char*> Lines;
+  int SearchMode = 0;
+  
+  for (size_t i = 0; i <= Length; i++)
+  {
+    if (SearchMode == 0) {
+      Lines.push_back(pDoc+i);
+    }
+
+    if (pDoc[i] == '\n') {
+      SearchMode = 0;
+    } else {
+      SearchMode = 1;
+    }
+
+    if (pDoc[i] == '\n' || pDoc[i] == '\r') {
+      pDoc[i] = '\0';
+    }
+  }
+
+  return setContent(Lines);
+}
+
+// ----------------------------------------------------------------------------
 void TextDoc::setContent(const std::vector<char*>& lines)
 {
   Lines.clear();
@@ -193,3 +225,21 @@ void TextDoc::deleteContent(const TextPos& p0, const TextPos& p1)
   Version++;
 }
 
+// ----------------------------------------------------------------------------
+void TextDoc::insertContent(const TextPos& p, const TextDoc& Content)
+{
+  if (Content.getLineCount() == 1) {
+    Lines.at(p.line).insert(p.column, Content.Lines[0]);
+    return;
+  }
+
+  std::string l1 = Lines.at(p.line).substr(p.column);
+
+  Lines[p.line].erase(p.column);
+  Lines[p.line].append(Content.Lines[0]);
+  
+  std::vector<std::string>::iterator it = Lines.insert(Lines.begin() + p.line + 1, Content.Lines.begin() + 1, Content.Lines.end());
+  it->append(l1);
+
+  Version++;
+}

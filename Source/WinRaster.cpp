@@ -320,7 +320,17 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
       TextDoc selText = pDoc->getSelectedText();
       copyTextToClipboard(_hWnd, selText);
     }
+    break;
     
+  case 'V':
+    if (ControlKey) {
+      TextDoc doc;
+      pasteTextFromClipboard(_hWnd, &doc);
+
+      pDoc->insertContent(doc);
+    }
+    break;
+
   default:
     return _pParent->onKeyDown(chr, RepCount, Flags);
   }
