@@ -575,17 +575,18 @@ void TextDocument::_deleteSelection()
 
   if (p0.line == p1.line) {
     _Doc.deleteRangeInLine(p0.line, p0.column, p1.column);
-    return;
   }
-
-  if (p0.column == 0) {
-    _Doc.deleteRangeInLine(p1.line, 0, p1.column);
-    _Doc.deleteLines(p0.line, p1.line);
-  }
-  else {
-    _Doc.deleteRangeInLine(p1.line, 0, p1.column);
-    _Doc.deleteRangeInLine(p0.line, p0.column, std::string::npos);
-    _Doc.deleteLines(p0.line+1, p1.line);
+  else
+  {
+    if (p0.column == 0) {
+      _Doc.deleteRangeInLine(p1.line, 0, p1.column);
+      _Doc.deleteLines(p0.line, p1.line);
+    }
+    else {
+      _Doc.deleteRangeInLine(p1.line, 0, p1.column);
+      _Doc.deleteRangeInLine(p0.line, p0.column, std::string::npos);
+      _Doc.deleteLines(p0.line+1, p1.line);
+    }
   }
 
   _Selecting = false;
