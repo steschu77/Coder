@@ -4,6 +4,12 @@
 
 #include "Document.h"
 
+// ----------------------------------------------------------------------------
+static bool isIdentifier(char ch)
+{
+  return ch  == '_' || isAlpha(ch) || isDigit(ch);
+}
+
 // ============================================================================
 char* readTextFile(const char* Path, size_t* pLength)
 {
@@ -210,8 +216,19 @@ retcode TextDocument::moveNextWord(bool Select)
   _handleSelection(Select, true);
 
   TextPos pos = getCursor();
-  _moveNextNonIdentifier(&pos);
-  _moveNextIdentifier(&pos);
+
+
+  if (Select) {
+    if (isIdentifier(_getChar(_Cursor))) {
+      _moveNextNonIdentifier(&pos);
+    } else {
+      _moveNextIdentifier(&pos);
+      _moveNextNonIdentifier(&pos);
+    }
+  } else {
+    _moveNextNonIdentifier(&pos);
+    _moveNextIdentifier(&pos);
+  }
 
   if (pos.line >= _Doc.getLineCount()) {
     pos.line = _Doc.getLineCount() - 1;
@@ -433,12 +450,6 @@ TextDoc TextDocument::getSelectedText() const
   getSelection(&p0, &p1);
 
   return _Doc.getContent(p0, p1);
-}
-
-// ----------------------------------------------------------------------------
-static bool isIdentifier(char ch)
-{
-  return ch  == '_' || isAlpha(ch) || isDigit(ch);
 }
 
 // ----------------------------------------------------------------------------
