@@ -6,7 +6,7 @@ Config gConfig;
 
 // ----------------------------------------------------------------------------
 ConfigColors::ConfigColors()
-: bkgEditor(0x00fdf6e3)
+: bkgEditor(0xf0fdf6e3)
 , bkgCursorLine(0x00f9f0d3)
 , colWhiteSpace(0x80a39B85)
 , colNumber(0x00078A78)
@@ -18,7 +18,7 @@ ConfigColors::ConfigColors()
 , colKeyword(0x00164BCB)
 , colLineNumber(0x00969483)
 , bkgLineNumber(0x80D5E8EE)
-, bkgFindResult(0x2807d007)
+, bkgFindResult(0x5007d007)
 , bkgSelection(0x807e7b71)
 {
 };

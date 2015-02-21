@@ -24,6 +24,7 @@ gfx::pixel_t gfx::blendPixel(int a, const gfx::pixel_t& a0, const gfx::pixel_t& 
   b.rgba.r = blend256(a, a0.rgba.r, a1.rgba.r);
   b.rgba.g = blend256(a, a0.rgba.g, a1.rgba.g);
   b.rgba.b = blend256(a, a0.rgba.b, a1.rgba.b);
+  b.rgba.a = blend256(a, a0.rgba.a, a1.rgba.a);
 
   return b;
 }
