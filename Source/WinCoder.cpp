@@ -78,6 +78,10 @@ LRESULT WinCoder::proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     PostQuitMessage(0);
     break;
     
+  case WM_SETFOCUS:
+    SetFocus(_hwndRaster);
+    break;
+
   case WM_SIZE:
     return onSize(LOWORD(lParam), HIWORD(lParam), wParam);
         
