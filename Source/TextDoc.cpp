@@ -1,5 +1,6 @@
 #include <Source/Headers.h>
 #include <Source/UTF8Tools.h>
+#include <Source/TextPos.h>
 
 #include "TextDoc.h"
 
@@ -51,6 +52,27 @@ size_t TextDoc::getMaxLineLength() const
 const std::string& TextDoc::getLine(size_t idx) const
 {
   return Lines.at(idx);
+}
+
+// ----------------------------------------------------------------------------
+std::string TextDoc::exportContent() const
+{
+  std::string text;
+
+  size_t cLines = getLineCount();
+
+  for (size_t i = 0; i < cLines; i++)
+  {
+    const std::string& line = getLine(i);
+
+    if (i > 0) {
+      text.push_back('\n');
+    }
+
+    text.append(line);
+  }
+
+  return text;
 }
 
 // ----------------------------------------------------------------------------
@@ -117,3 +139,27 @@ void TextDoc::deleteRangeInLine(size_t line, size_t col0, size_t col1)
   text.erase(col0, col1-col0);
   Version++;
 }
+
+// ----------------------------------------------------------------------------
+TextDoc TextDoc::getContent(const TextPos& p0, const TextPos& p1) const
+{
+  TextDoc doc;
+
+  for (size_t i = p0.line; i <= p1.line; i++)
+  {
+    std::string line = Lines.at(i);
+
+    if (i == p0.line) {
+      line = line.substr(p0.column, std::string::npos);
+    }
+
+    if (i == p1.line) {
+      line = line.substr(0, p1.column);
+    }
+
+    doc.Lines.push_back(line);
+  }
+
+  return doc;
+}
+

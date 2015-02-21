@@ -49,6 +49,8 @@ public:
   bool hasSelectedText(size_t line) const;
   bool isSelected(size_t line, size_t column) const;
 
+  TextDoc getSelectedText() const;
+
   uint getDocumentVersion() const;
   uint getCursorVersion() const;
   uint getSelectionVersion() const;
@@ -87,8 +89,6 @@ private:
   void _startSelection();
   void _discardSelection();
   void _deleteSelection();
-
-  TextDoc getSelectedText() const;
 };
 
 // ----------------------------------------------------------------------------

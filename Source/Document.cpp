@@ -435,6 +435,20 @@ bool TextDocument::isSelected(size_t line, size_t column) const
 }
 
 // ----------------------------------------------------------------------------
+TextDoc TextDocument::getSelectedText() const
+{
+  TextPos p0 = _Cursor;
+  TextPos p1 = _Cursor;
+
+  p0.column = 0;
+  p1.column = _Doc.getLineLength(p1.line);
+
+  getSelection(&p0, &p1);
+
+  return _Doc.getContent(p0, p1);
+}
+
+// ----------------------------------------------------------------------------
 static bool isIdentifier(char ch)
 {
   return ch  == '_' || isAlpha(ch) || isDigit(ch);

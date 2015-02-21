@@ -77,6 +77,9 @@
     <ClCompile Include="..\..\Source\SearchResultRenderer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Clipboard.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Resource.h">
@@ -141,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FixedSizeFont.h">
       <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Clipboard.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 #include <Source/Headers.h>
 #include <Source/ToolBox.h>
 #include <Source/FixedSizeFont.h>
+#include <Source/Clipboard.h>
 #include <Source/Config.h>
 
 #include <Source/WinSearch.h>
@@ -313,6 +314,12 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
       pDoc->deleteLine();
     }
     break;
+
+  case 'C':
+    if (ControlKey) {
+      TextDoc selText = pDoc->getSelectedText();
+      copyTextToClipboard(_hWnd, selText);
+    }
     
   default:
     return _pParent->onKeyDown(chr, RepCount, Flags);

@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\BaseTypes.h" />
     <ClInclude Include="..\..\Source\Canvas.h" />
+    <ClInclude Include="..\..\Source\Clipboard.h" />
     <ClInclude Include="..\..\Source\Config.h" />
     <ClInclude Include="..\..\Source\Document.h" />
     <ClInclude Include="..\..\Source\FileSystem.h" />
@@ -110,6 +111,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Canvas.cpp" />
     <ClCompile Include="..\..\Source\CharType.cpp" />
+    <ClCompile Include="..\..\Source\Clipboard.cpp" />
     <ClCompile Include="..\..\Source\Coder.cpp" />
     <ClCompile Include="..\..\Source\Config.cpp" />
     <ClCompile Include="..\..\Source\ConvertUTF16.cpp" />
