@@ -32,4 +32,6 @@ struct TextDoc
   void deleteRangeInLine(size_t line, size_t col0, size_t col1);
 
   TextDoc getContent(const TextPos& p0, const TextPos& p1) const;
+
+  void deleteContent(const TextPos& p0, const TextPos& p1);
 };

@@ -163,3 +163,33 @@ TextDoc TextDoc::getContent(const TextPos& p0, const TextPos& p1) const
   return doc;
 }
 
+// ----------------------------------------------------------------------------
+void TextDoc::deleteContent(const TextPos& p0, const TextPos& p1)
+{
+  TextDoc doc;
+
+  size_t cLines = getLineCount();
+
+  doc.Lines.reserve(cLines);
+
+  for (size_t i = 0; i < cLines; i++)
+  {
+    if (i < p0.line || i > p1.line) {
+      doc.Lines.push_back(Lines[i]);
+      continue;
+    }
+
+    if (i > p0.line && i <= p1.line) {
+      continue;
+    }
+
+    std::string line0 = Lines[p0.line].substr(0, p0.column);
+    std::string line1 = Lines[p1.line].substr(p1.column, std::string::npos);
+
+    doc.Lines.push_back(line0 + line1);
+  }
+
+  Lines.swap(doc.Lines);
+  Version++;
+}
+
