@@ -68,17 +68,6 @@ void renderAntialiasedFont(const gfx::FixedSizeFont* pFont, int idx)
   bmi.bmiHeader.biPlanes = 1;
   bmi.bmiHeader.biBitCount = 32;
 
-  BITMAP bm;
-  bm.bmType = 0;
-  bm.bmWidth = BitmapWidth;
-  bm.bmHeight = BitmapHeight;
-  bm.bmWidthBytes = BitmapWidth * 4;
-  bm.bmPlanes = 1;
-  bm.bmBitsPixel = 32;
-  bm.bmBits = pFont->aPels;
-
-  //HBITMAP hBmp = CreateBitmapIndirect(&bm);
-
   uint8* pBits = nullptr;
   HBITMAP hDIB = CreateDIBSection(0, &bmi, DIB_RGB_COLORS, (LPVOID*)&pBits, 0, 0);
 
