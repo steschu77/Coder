@@ -80,6 +80,7 @@ retcode TextDocument::load()
   }
 
   _Doc.setContent(Lines);
+  _Doc.Version = 0;
   
   delete[] pDoc;
   

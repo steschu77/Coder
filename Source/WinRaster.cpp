@@ -325,6 +325,7 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
     return _pParent->onKeyDown(chr, RepCount, Flags);
   }
 
+  _onDocumentDirty();
   _onCursorDirty();
   return 0;
 }
