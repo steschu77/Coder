@@ -152,7 +152,15 @@ LRESULT WinRaster::proc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 // ----------------------------------------------------------------------------
 LRESULT WinRaster::onCreate()
 {
-  gfx::loadTrueTypeFont(_Width, _Height, &_pFont);
+  //gfx::loadTrueTypeFont(_Width, _Height, &_pFont);
+  static const char* FontFiles[4] = {
+    "c:\\Windows\\Fonts\\consola.ttf",
+    "c:\\Windows\\Fonts\\consolab.ttf",
+    "c:\\Windows\\Fonts\\consolai.ttf",
+    "c:\\Windows\\Fonts\\consolaz.ttf",
+  };
+  
+  gfx::loadTrueTypeFont(FontFiles, _Width, _Height, &_pFont);
   
   _setupVertScrollBar();
   _setupHorzScrollBar();

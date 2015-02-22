@@ -98,6 +98,7 @@
     <ClInclude Include="..\..\Source\TextPos.h" />
     <ClInclude Include="..\..\Source\Tokenizer.h" />
     <ClInclude Include="..\..\Source\ToolBox.h" />
+    <ClInclude Include="..\..\Source\TrueType.h" />
     <ClInclude Include="..\..\Source\UTF8Tools.h" />
     <ClInclude Include="..\..\Source\Win32Lib.h" />
     <ClInclude Include="..\..\Source\WinCoder.h" />
@@ -125,6 +126,7 @@
     <ClCompile Include="..\..\Source\SearchResultRenderer.cpp" />
     <ClCompile Include="..\..\Source\TextDoc.cpp" />
     <ClCompile Include="..\..\Source\Tokenizer.cpp" />
+    <ClCompile Include="..\..\Source\TrueType.cpp" />
     <ClCompile Include="..\..\Source\UTF8ToInt.cpp" />
     <ClCompile Include="..\..\Source\WinCoder.cpp" />
     <ClCompile Include="..\..\Source\WinFactory.cpp" />

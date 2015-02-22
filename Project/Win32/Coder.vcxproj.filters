@@ -80,6 +80,9 @@
     <ClCompile Include="..\..\Source\Clipboard.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TrueType.cpp">
+      <Filter>Canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Resource.h">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Clipboard.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TrueType.h">
+      <Filter>Canvas</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

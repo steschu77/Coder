@@ -26,5 +26,6 @@ struct FixedSizeFont
 };
 
 retcode loadTrueTypeFont(int cx, int cy, FixedSizeFont** pFont);
+retcode loadTrueTypeFont(const char* FileNames[4], int width, int height, gfx::FixedSizeFont** ppFont);
 
 } // namespace gfx
