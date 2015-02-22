@@ -298,8 +298,7 @@ retcode TextDocument::moveEndOfDocument(bool Select)
 {
   _handleSelection(Select, true);
 
-  _Cursor.line = _Doc.getLineCount()-1;
-  _Cursor.column = _Doc.getLineLength(_Cursor.line);
+  _Cursor = _Doc.getEndOfDoc();
   _CursorVersion++;
   return rcSuccess;
 }
@@ -310,7 +309,7 @@ retcode TextDocument::insert(char ch)
   _deleteSelection();
 
   std::string str(1, ch);
-  _Doc.insertChars(_Cursor.line, _Cursor.column, str.c_str());
+  _Doc.insertChars(_Cursor, str.c_str());
 
   _Cursor.column++;
   _CursorVersion++;
@@ -328,7 +327,7 @@ retcode TextDocument::insertNewLine()
     indent = 0;
   }
 
-  _Doc.insertNewLine(_Cursor.line, _Cursor.column, indent);
+  _Doc.insertNewLine(_Cursor, indent);
   _Cursor.column = indent;
   _Cursor.line++;
   return rcSuccess;
@@ -539,10 +538,10 @@ retcode TextDocument::insertOpeningBracket()
 {
   size_t indent = getIndent(_Cursor.line);
 
-  _Doc.insertChars(_Cursor.line, _Cursor.column, "{");
-  _Doc.insertNewLine(_Cursor.line, _Cursor.column+1, indent + gConfig.tabSize);
-  _Doc.insertNewLine(_Cursor.line+1, _Doc.getLineLength(_Cursor.line+1), indent);
-  _Doc.insertChars(_Cursor.line+2, indent, "}");
+  _Doc.insertChars(_Cursor, "{");
+  _Doc.insertNewLine(TextPos(_Cursor.line, _Cursor.column+1), indent + gConfig.tabSize);
+  _Doc.insertNewLine(TextPos(_Cursor.line+1, _Doc.getLineLength(_Cursor.line+1)), indent);
+  _Doc.insertChars(TextPos(_Cursor.line+2, indent), "}");
 
   _Cursor.column = indent + gConfig.tabSize;
   _Cursor.line++;

@@ -11,6 +11,8 @@ struct TextPos;
 struct TextDoc
 {
   TextDoc();
+  explicit TextDoc(const char* ch);
+  explicit TextDoc(size_t cLines);
 
   std::vector<std::string> Lines;
   uint Version;
@@ -24,8 +26,8 @@ struct TextDoc
   const std::string& getLine(size_t idx) const;
   std::string exportContent() const;
 
-  void insertChars(size_t line, size_t col, const char* ch);
-  void insertNewLine(size_t line, size_t col, size_t indent=0);
+  void insertChars(const TextPos& pos, const char* ch);
+  void insertNewLine(const TextPos& pos, size_t indent=0);
   void insertNewLineBefore(size_t line, size_t indent=0);
   void deleteChar(size_t line, size_t col);
   void deleteLine(size_t line);
@@ -36,4 +38,10 @@ struct TextDoc
   void insertContent(const TextPos& p, const TextDoc& Content);
 
   void deleteContent(const TextPos& p0, const TextPos& p1);
+
+  TextPos getEndOfDoc() const;
+  TextPos getNextPos(const TextPos& Pos) const;
+  TextPos getPrevPos(const TextPos& Pos) const;
+
+  char getCharAt(const TextPos& pos) const;
 };

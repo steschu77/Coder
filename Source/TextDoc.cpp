@@ -11,6 +11,21 @@ TextDoc::TextDoc()
 }
 
 // ----------------------------------------------------------------------------
+TextDoc::TextDoc(const char* ch)
+: Version(0)
+, Lines(1)
+{
+  Lines[0] = ch;
+}
+
+// ----------------------------------------------------------------------------
+TextDoc::TextDoc(size_t cLines)
+: Version(0)
+, Lines(cLines)
+{
+}
+
+// ----------------------------------------------------------------------------
 void TextDoc::setContent(char* pDoc, size_t Length)
 {
   Lines.clear();
@@ -108,68 +123,45 @@ std::string TextDoc::exportContent() const
 }
 
 // ----------------------------------------------------------------------------
-void TextDoc::insertChars(size_t line, size_t col, const char* ch)
+void TextDoc::insertChars(const TextPos& pos, const char* ch)
 {
-  Lines.at(line).insert(col, ch);
-  Version++;
+  TextDoc doc(ch);
+  insertContent(pos, doc);
 }
 
 // ----------------------------------------------------------------------------
-void TextDoc::insertNewLine(size_t line, size_t col, size_t indent)
+void TextDoc::insertNewLine(const TextPos& pos, size_t indent)
 {
-  std::string l1 = std::string(indent, ' ') + Lines.at(line).substr(col);
-  Lines.insert(Lines.begin() + line + 1, l1);
+  TextDoc doc(2u);
+  doc.Lines[1] = std::string(indent, ' ');
 
-  Lines[line].erase(col);
-  Version++;
+  insertContent(pos, doc);
 }
 
 // ----------------------------------------------------------------------------
 void TextDoc::insertNewLineBefore(size_t line, size_t indent)
 {
-  std::string l1 = std::string(indent, ' ');
-  Lines.insert(Lines.begin() + line, l1);
-  Version++;
+  TextDoc doc(2u);
+  doc.Lines[0] = std::string(indent, ' ');
+  insertContent(TextPos(line, 0), doc);
 }
 
 // ----------------------------------------------------------------------------
 void TextDoc::deleteChar(size_t line, size_t col)
 {
-  if (col < Lines.at(line).length()) {
-    Lines[line].erase(col, 1);
-    Version++;
-  }
-  else if (line < Lines.size()) {
-    Lines[line].append(Lines[line + 1]);
-    Lines.erase(Lines.begin() + line + 1);
-    Version++;
-  }
+  TextPos p0(line, col);
+  TextPos p1(getNextPos(p0));
+
+  deleteContent(p0, p1);
 }
 
 // ----------------------------------------------------------------------------
 void TextDoc::deleteLine(size_t line)
 {
-  if (line < Lines.size() && Lines.size() > 1) {
-    Lines.erase(Lines.begin() + line);
-    Version++;
-  }
-}
+  TextPos p0(line, 0);
+  TextPos p1(line+1, 0);
 
-// ----------------------------------------------------------------------------
-void TextDoc::deleteLines(size_t first, size_t last)
-{
-  if (first < Lines.size() && Lines.size() > last-first+1) {
-    Lines.erase(Lines.begin() + first, Lines.begin() + last);
-    Version++;
-  }
-}
-
-// ----------------------------------------------------------------------------
-void TextDoc::deleteRangeInLine(size_t line, size_t col0, size_t col1)
-{
-  std::string& text = Lines.at(line);
-  text.erase(col0, col1-col0);
-  Version++;
+  deleteContent(p0, p1);
 }
 
 // ----------------------------------------------------------------------------
@@ -242,4 +234,53 @@ void TextDoc::insertContent(const TextPos& p, const TextDoc& Content)
   it->append(l1);
 
   Version++;
+}
+
+// ----------------------------------------------------------------------------
+TextPos TextDoc::getEndOfDoc() const
+{
+  size_t lastLine = getLineCount()-1;
+  return TextPos(lastLine, getLineLength(lastLine));
+}
+
+// ----------------------------------------------------------------------------
+TextPos TextDoc::getNextPos(const TextPos& Pos) const
+{
+  TextPos pos(Pos);
+
+  if (++pos.column > getLineLength(pos.line)) {
+    ++pos.line;
+    pos.column = 0;
+  }
+
+  return pos;
+}
+
+// ----------------------------------------------------------------------------
+TextPos TextDoc::getPrevPos(const TextPos& Pos) const
+{
+  TextPos pos(Pos);
+  if (--pos.column >= getLineLength(pos.line)) {
+    --pos.line;
+    pos.column = getLineLength(pos.line);
+  }
+
+  return pos;
+}
+
+// ----------------------------------------------------------------------------
+char TextDoc::getCharAt(const TextPos& pos) const
+{
+  if (pos.line < getLineCount())
+  {
+    std::string line = getLine(pos.line);
+
+    if (pos.column < getLineLength(pos.line)) {
+      return line[pos.column];
+    } else if (pos.column == getLineLength(pos.line)) {
+      return '\n';
+    }
+  }
+
+  return '\0';
 }
