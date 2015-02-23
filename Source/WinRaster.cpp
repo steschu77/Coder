@@ -256,6 +256,7 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
   case VK_UP:
     if (ControlKey) {
       _onScroll(SB_LINEUP, 0, &_siVert, SB_VERT);
+      _placeCursorInVisibleRange();
     }
     else {
       pDoc->moveUp(ShiftKey);
@@ -265,6 +266,7 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
   case VK_DOWN:
     if (ControlKey) {
       _onScroll(SB_LINEDOWN, 0, &_siVert, SB_VERT);
+      _placeCursorInVisibleRange();
     }
     else {
       pDoc->moveDown(ShiftKey);
@@ -437,6 +439,8 @@ LRESULT WinRaster::onMouseWheel(int, int, uint, uint)
 // ----------------------------------------------------------------------------
 void WinRaster::onDocumentDirty()
 {
+  _setupVertScrollBar();
+  _setupHorzScrollBar();
   _updateState();
 }
 
@@ -510,6 +514,28 @@ void WinRaster::_ensureCursorVisibility()
 
   if (cp.line >= LastVisibleLine) {
     _onScroll(SB_THUMBPOSITION, cp.line - _TextLines + 1, &_siVert, SB_VERT);
+  }
+}
+
+// ----------------------------------------------------------------------------
+void WinRaster::_placeCursorInVisibleRange()
+{
+  TextDocument* pDoc = _pParent->getDocument();
+  if (pDoc == nullptr) {
+    return;
+  }
+
+  size_t FirstVisibleLine = _siVert.Pos;
+  size_t LastVisibleLine = _siVert.Pos + _TextLines;
+
+  TextPos cp = pDoc->getCursor();
+
+  if (cp.line < FirstVisibleLine) {
+    pDoc->setCursor(TextPos(FirstVisibleLine, 0));
+  }
+
+  if (cp.line >= LastVisibleLine) {
+    pDoc->setCursor(TextPos(LastVisibleLine - _TextLines + 1, 0));
   }
 }
 
