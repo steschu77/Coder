@@ -340,6 +340,7 @@ retcode TextDocument::insertNewLineBefore()
 // ----------------------------------------------------------------------------
 retcode TextDocument::insertContent(const TextDoc& doc)
 {
+  _deleteSelection();
   _Doc.insertContent(_Cursor, doc);
   return rcSuccess;
 }
