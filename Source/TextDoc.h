@@ -8,40 +8,52 @@
 struct TextPos;
 
 // ============================================================================
-struct TextDoc
+class TextDoc
 {
+  friend class EditableTextDoc;
+
+public:
   TextDoc();
   explicit TextDoc(const char* ch);
   explicit TextDoc(size_t cLines);
 
-  std::vector<std::string> Lines;
-  uint Version;
-
-  void setContent(char* lines, size_t Length);
-  void setContent(const std::vector<char*>& lines);
-
   size_t getLineCount() const;
-  size_t getLineLength(size_t idx) const;
+  size_t getLineLength(size_t line) const;
   size_t getMaxLineLength() const;
-  const std::string& getLine(size_t idx) const;
-  std::string exportContent() const;
-
-  void insertChars(const TextPos& pos, const char* ch);
-  void insertNewLine(const TextPos& pos, size_t indent=0);
-  void insertNewLineBefore(size_t line, size_t indent=0);
-  void deleteChar(size_t line, size_t col);
-  void deleteLine(size_t line);
-  void deleteLines(size_t line, size_t count);
-  void deleteRangeInLine(size_t line, size_t col0, size_t col1);
-
-  TextDoc getContent(const TextPos& p0, const TextPos& p1) const;
-  void insertContent(const TextPos& p, const TextDoc& Content);
-
-  void deleteContent(const TextPos& p0, const TextPos& p1);
 
   TextPos getEndOfDoc() const;
   TextPos getNextPos(const TextPos& Pos) const;
   TextPos getPrevPos(const TextPos& Pos) const;
 
   char getCharAt(const TextPos& pos) const;
+  const std::string& getLineAt(size_t line) const;
+  
+  std::string exportContent() const;
+
+  TextDoc getContent(const TextPos& p0, const TextPos& p1) const;
+
+  std::vector<std::string> Lines;
 };
+
+// ============================================================================
+class EditableTextDoc : public TextDoc
+{
+public:
+  EditableTextDoc();
+
+  void replaceContent(char* lines, size_t Length);
+
+  void insertContent(const TextPos& p, const TextDoc& Content);
+  void deleteContent(const TextPos& p0, const TextPos& p1);
+
+  uint getVersion() const;
+
+private:
+  uint Version;
+};
+
+// ----------------------------------------------------------------------------
+inline uint EditableTextDoc::getVersion() const
+{
+  return Version;
+}

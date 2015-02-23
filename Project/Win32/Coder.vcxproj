@@ -90,11 +90,13 @@
     <ClInclude Include="..\..\Source\FileSystem.h" />
     <ClInclude Include="..\..\Source\FixedSizeFont.h" />
     <ClInclude Include="..\..\Source\Headers.h" />
+    <ClInclude Include="..\..\Source\History.h" />
     <ClInclude Include="..\..\Source\LinuxLib.h" />
     <ClInclude Include="..\..\Source\Resource.h" />
     <ClInclude Include="..\..\Source\SearchEngine.h" />
     <ClInclude Include="..\..\Source\System.h" />
     <ClInclude Include="..\..\Source\TextDoc.h" />
+    <ClInclude Include="..\..\Source\TextEdit.h" />
     <ClInclude Include="..\..\Source\TextPos.h" />
     <ClInclude Include="..\..\Source\Tokenizer.h" />
     <ClInclude Include="..\..\Source\ToolBox.h" />
@@ -122,9 +124,11 @@
     <ClCompile Include="..\..\Source\Headers.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\Source\History.cpp" />
     <ClCompile Include="..\..\Source\SearchEngine.cpp" />
     <ClCompile Include="..\..\Source\SearchResultRenderer.cpp" />
     <ClCompile Include="..\..\Source\TextDoc.cpp" />
+    <ClCompile Include="..\..\Source\TextEdit.cpp" />
     <ClCompile Include="..\..\Source\Tokenizer.cpp" />
     <ClCompile Include="..\..\Source\TrueType.cpp" />
     <ClCompile Include="..\..\Source\UTF8ToInt.cpp" />

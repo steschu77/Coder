@@ -80,8 +80,14 @@
     <ClCompile Include="..\..\Source\Clipboard.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\History.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\TrueType.cpp">
       <Filter>Canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\TextEdit.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,8 +157,14 @@
     <ClInclude Include="..\..\Source\Clipboard.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\History.h">
+      <Filter>Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\TrueType.h">
       <Filter>Canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\TextEdit.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

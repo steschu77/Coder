@@ -8,4 +8,4 @@
 
 // ============================================================================
 retcode copyTextToClipboard(HWND hwnd, const TextDoc& doc);
-retcode pasteTextFromClipboard(HWND hwnd, TextDoc* pDoc);
+retcode pasteTextFromClipboard(HWND hwnd, EditableTextDoc* pDoc);

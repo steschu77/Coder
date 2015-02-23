@@ -4,8 +4,7 @@
 \*****************************************************************************/
 #pragma once
 
-#include "TextDoc.h"
-#include "TextPos.h"
+#include "TextEdit.h"
 
 // ============================================================================
 class TextDocument
@@ -17,7 +16,7 @@ public:
   retcode load();
   retcode save();
 
-  const TextDoc* getDoc() const;
+  const TextDoc& getDoc() const;
   
   const std::string getPath() const;
   bool isDirty() const;
@@ -46,6 +45,9 @@ public:
   retcode deleteAfter();
   retcode deleteLine();
 
+  retcode undo();
+  retcode redo();
+
   bool getSelection(TextPos* pP0, TextPos* pP1) const;
   bool hasSelectedText(size_t line) const;
   bool isSelected(size_t line, size_t column) const;
@@ -61,7 +63,7 @@ public:
 private:
   std::string _Path;
 
-  TextDoc _Doc;
+  TextEdit _Doc;
 
   TextPos _Cursor;
   TextPos _SelectionStart;
@@ -71,6 +73,8 @@ private:
   // Versions for fast change detection
   uint _CursorVersion;
   uint _SelectionVersion;
+
+  uint _PersistentVersion;
 
   char _getChar(const TextPos& pos) const;
   char _getNextChar(TextPos* pPos) const;
@@ -93,15 +97,15 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-inline const TextDoc* TextDocument::getDoc() const
+inline const TextDoc& TextDocument::getDoc() const
 {
-  return &_Doc;
+  return _Doc.getDoc();
 }
 
 // ----------------------------------------------------------------------------
 inline uint TextDocument::getDocumentVersion() const
 {
-  return _Doc.Version;
+  return _Doc.getVersion();
 }
 
 // ----------------------------------------------------------------------------

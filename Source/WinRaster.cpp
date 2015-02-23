@@ -332,10 +332,22 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
     
   case 'V':
     if (ControlKey) {
-      TextDoc doc;
+      EditableTextDoc doc;
       pasteTextFromClipboard(_hWnd, &doc);
 
       pDoc->insertContent(doc);
+    }
+    break;
+
+  case 'Y':
+    if (ControlKey) {
+      pDoc->redo();
+    }
+    break;
+
+  case 'Z':
+    if (ControlKey) {
+      pDoc->undo();
     }
     break;
 
@@ -574,9 +586,9 @@ void WinRaster::_updateCanvas(const RenderState& State)
 
   pCanvas = _pCanvas[1-_CursorCanvas];
 
-  const TextDoc* pDoc = pDocument->getDoc();
+  const TextDoc& doc = pDocument->getDoc();
 
-  size_t cDocLines = pDoc->getLineCount() - yOfs;
+  size_t cDocLines = doc.getLineCount() - yOfs;
   size_t cLines = std::min(_TextLines, cDocLines);
 
   for (size_t y = 0; y < cLines; y++)
@@ -595,7 +607,7 @@ void WinRaster::_updateCanvas(const RenderState& State)
         pCanvas->clear(0, y*_Height, _Pels, (y+1)*_Height, gConfig.Colors.bkgEditor);
       }
 
-      const std::string strLine = pDoc->getLine(yDoc);
+      const std::string strLine = doc.getLineAt(yDoc);
       const size_t cLength = strLine.length();
 
       if (cLength > xOfs)
@@ -648,11 +660,11 @@ void WinRaster::_updateCursor(const RenderState& State)
 void WinRaster::_setupVertScrollBar()
 {
   const TextDocument* pDocument = _pParent->getDocument();
-  const TextDoc* pDoc = pDocument != nullptr ? pDocument->getDoc() : nullptr;
+  size_t cLines = pDocument != nullptr ? pDocument->getDoc().getLineCount() : 0;
 
   RECT rc; GetClientRect(_hWnd, &rc);
   size_t cy    = (rc.bottom - rc.top + _siVert.Unit - 1) / _siVert.Unit;
-  size_t ySize = (pDoc != nullptr) ? pDoc->getLineCount() : 0;
+  size_t ySize = cLines;
 
   _siVert.Max  = ySize > 0 ? ySize : 0;
   _siVert.Page = cy;
@@ -665,11 +677,11 @@ void WinRaster::_setupVertScrollBar()
 void WinRaster::_setupHorzScrollBar()
 {
   const TextDocument* pDocument = _pParent->getDocument();
-  const TextDoc* pDoc = pDocument != nullptr ? pDocument->getDoc() : nullptr;
+  size_t cMaxLineLength = pDocument != nullptr ? pDocument->getDoc().getMaxLineLength() : 0;
 
   RECT rc; GetClientRect(_hWnd, &rc);
   size_t cx    = (rc.right - rc.left + _siHorz.Unit - 1) / _siHorz.Unit;
-  size_t xSize = (pDoc != nullptr) ? (pDoc->getMaxLineLength() + _Width - cx) : 0;
+  size_t xSize = cMaxLineLength ? cMaxLineLength + _Width - cx : 0;
 
   _siHorz.Max  = xSize > 0 ? xSize - 1 : 0;
   _siHorz.Page = _Width;

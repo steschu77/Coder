@@ -226,9 +226,9 @@ void WinCoder::onDocumentDirty()
 void WinCoder::onCursorDirty()
 {
   TextPos pos = _pDoc->getCursor();
-  const TextDoc* pDoc = _pDoc->getDoc();
+  const TextDoc& doc = _pDoc->getDoc();
 
-  _pWinSearch->updateCursorPos(pos, pDoc->getLineCount(), pDoc->getLineLength(pos.line));
+  _pWinSearch->updateCursorPos(pos, doc.getLineCount(), doc.getLineLength(pos.line));
 
   _pWinRaster->onCursorDirty();
 }
@@ -254,14 +254,14 @@ void WinCoder::_updateTitle()
 // ----------------------------------------------------------------------------
 void WinCoder::goToLine(size_t line)
 {
-  const TextDoc* pDoc = _pDoc->getDoc();
+  const TextDoc& doc = _pDoc->getDoc();
 
-  size_t cLines = pDoc->getLineCount();
+  size_t cLines = doc.getLineCount();
   if (line >= cLines) {
     return;
   }
 
-  size_t column = pDoc->getLineLength(line);
+  size_t column = doc.getLineLength(line);
   _pDoc->setCursor(TextPos(line, column));
 
   onCursorDirty();

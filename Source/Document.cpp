@@ -1,6 +1,7 @@
 #include <Source/Headers.h>
 #include <Source/UTF8Tools.h>
 #include <Source/Config.h>
+#include <Source/History.h>
 
 #include "Document.h"
 
@@ -40,6 +41,7 @@ TextDocument::TextDocument(const char* Path)
 , _Selecting(false)
 , _CursorVersion(0)
 , _SelectionVersion(0)
+, _PersistentVersion(0)
 {
 }
 
@@ -52,7 +54,7 @@ const std::string TextDocument::getPath() const
 // ----------------------------------------------------------------------------
 bool TextDocument::isDirty() const
 {
-  return _Doc.Version != 0;
+  return _Doc.getVersion() != _PersistentVersion;
 }
 
 // ----------------------------------------------------------------------------
@@ -65,8 +67,8 @@ retcode TextDocument::load()
     return rcFileNotFound;
   }
   
-  _Doc.setContent(pDoc, Length);
-  _Doc.Version = 0;
+  _Doc.replaceContent(pDoc, Length);
+  _PersistentVersion = _Doc.getVersion();
   
   delete[] pDoc;
   
@@ -77,13 +79,14 @@ retcode TextDocument::load()
 retcode TextDocument::save()
 {
   FILE* f = fopen(_Path.c_str(), "wb");
+  const TextDoc& doc = _Doc.getDoc();
 
-  size_t cLines = _Doc.getLineCount();
+  size_t cLines = doc.getLineCount();
 
   for (size_t i = 0; i < cLines; i++)
   {
-    size_t cLength = _Doc.getLineLength(i);
-    const char* pLine = _Doc.getLine(i).c_str();
+    size_t cLength = doc.getLineLength(i);
+    const char* pLine = doc.getLineAt(i).c_str();
 
     if (i > 0) {
       fwrite("\n", 1, 1, f);
@@ -93,22 +96,23 @@ retcode TextDocument::save()
 
   fclose(f);
 
-  _Doc.Version = 0;
+  _PersistentVersion = _Doc.getVersion();
   return rcSuccess;
 }
 
 // ----------------------------------------------------------------------------
 size_t TextDocument::getIndent(size_t line) const
 {
+  const TextDoc& doc = _Doc.getDoc();
   size_t indent = std::string::npos;
 
-  if (line > _Doc.getLineCount()) {
+  if (line > doc.getLineCount()) {
     return 0;
   }
 
   while (line > 0 && indent == std::string::npos)
   {
-    const std::string& strLine = _Doc.getLine(line);
+    const std::string& strLine = doc.getLineAt(line);
     indent = strLine.find_first_not_of(' ');
     line--;
   }
@@ -386,6 +390,20 @@ retcode TextDocument::deleteLine()
 }
 
 // ----------------------------------------------------------------------------
+retcode TextDocument::undo()
+{
+  _Doc.undo();
+  return rcSuccess;
+}
+
+// ----------------------------------------------------------------------------
+retcode TextDocument::redo()
+{
+  _Doc.redo();
+  return rcSuccess;
+}
+
+// ----------------------------------------------------------------------------
 bool TextDocument::getSelection(TextPos* pP0, TextPos* pP1) const
 {
   if (!_Selecting) {
@@ -448,7 +466,7 @@ TextDoc TextDocument::getSelectedText() const
 
   getSelection(&p0, &p1);
 
-  return _Doc.getContent(p0, p1);
+  return _Doc.getDoc().getContent(p0, p1);
 }
 
 // ----------------------------------------------------------------------------
@@ -456,7 +474,7 @@ char TextDocument::_getChar(const TextPos& pos) const
 {
   if (pos.line < _Doc.getLineCount())
   {
-    std::string line = _Doc.getLine(pos.line);
+    std::string line = _Doc.getDoc().getLineAt(pos.line);
 
     if (pos.column < _Doc.getLineLength(pos.line)) {
       return line[pos.column];

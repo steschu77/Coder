@@ -55,7 +55,7 @@ bool SearchEngine::getNextResult(TextPos* pPos, bool Direction)
 }
 
 // ----------------------------------------------------------------------------
-void SearchEngine::indexDocument(const TextDoc* pDoc, const std::string& Search, bool WholeWord, bool MatchCase)
+void SearchEngine::indexDocument(const TextDoc& doc, const std::string& Search, bool WholeWord, bool MatchCase)
 {
   _Search = Search;
   _WholeWord = WholeWord;
@@ -67,18 +67,18 @@ void SearchEngine::indexDocument(const TextDoc* pDoc, const std::string& Search,
     }
   }
 
-  updateDocument(pDoc);
+  updateDocument(doc);
 }
 
 // ----------------------------------------------------------------------------
-void SearchEngine::updateDocument(const TextDoc* pDoc)
+void SearchEngine::updateDocument(const TextDoc& doc)
 {
   _Results.clear();
 
-  size_t cLines = pDoc->getLineCount();
+  size_t cLines = doc.getLineCount();
   for (size_t i = 0; i < cLines; i++)
   {
-    std::string line = pDoc->getLine(i);
+    std::string line = doc.getLineAt(i);
 
     if (!_MatchCase) {
       for (auto& chr : line) {

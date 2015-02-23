@@ -1,6 +1,6 @@
 #pragma once
 
-struct TextDoc;
+class TextDoc;
 
 #include <Source/TextPos.h>
 
@@ -11,8 +11,8 @@ class SearchEngine
 public:
   SearchEngine();
   
-  void indexDocument(const TextDoc* pDoc, const std::string& Search, bool WholeWord, bool MatchCase);
-  void updateDocument(const TextDoc* pDoc);
+  void indexDocument(const TextDoc& pDoc, const std::string& Search, bool WholeWord, bool MatchCase);
+  void updateDocument(const TextDoc& pDoc);
   void invalidate();
 
   size_t getPatternLength() const;

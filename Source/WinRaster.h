@@ -62,6 +62,7 @@ protected:
   void _onSelectionDirty();
 
   void _ensureCursorVisibility();
+  void _placeCursorInVisibleRange();
   void _updateTitle();
 
   WinCoder* _pParent;

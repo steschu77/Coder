@@ -36,8 +36,8 @@ retcode copyTextToClipboard(HWND hwnd, const TextDoc& doc)
 }
 
 // ----------------------------------------------------------------------------
-retcode pasteTextFromClipboard(HWND hwnd, TextDoc* pDoc)
-{  
+retcode pasteTextFromClipboard(HWND hwnd, EditableTextDoc* pDoc)
+{
   if (!IsClipboardFormatAvailable(CF_TEXT)) {
     return rcFailed;
   }
@@ -56,7 +56,7 @@ retcode pasteTextFromClipboard(HWND hwnd, TextDoc* pDoc)
       char* pText = new char [Length];
       memcpy(pText, lptstr, Length);
 
-      pDoc->setContent(pText, Length);
+      pDoc->replaceContent(pText, Length);
       delete[] pText;
 
       GlobalUnlock(hglb);
