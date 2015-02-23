@@ -63,4 +63,5 @@ retcode pasteTextFromClipboard(HWND hwnd, EditableTextDoc* pDoc)
     }
   }
   CloseClipboard();
+  return rcSuccess;
 }
