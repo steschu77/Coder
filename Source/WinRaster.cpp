@@ -447,7 +447,11 @@ void WinRaster::onDocumentDirty()
 // ----------------------------------------------------------------------------
 void WinRaster::_onDocumentDirty()
 {
-  _pParent->onDocumentDirty();
+  RenderState State = _getCurrentState();
+
+  if (State.DocumentVersion != _RenderedState.DocumentVersion) {
+    _pParent->onDocumentDirty();
+  }
 }
 
 // ----------------------------------------------------------------------------
