@@ -53,6 +53,7 @@ public:
   bool isSelected(size_t line, size_t column) const;
 
   TextDoc getSelectedText() const;
+  void deleteSelectedText();
 
   uint getDocumentVersion() const;
   uint getCursorVersion() const;

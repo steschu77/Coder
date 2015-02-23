@@ -341,6 +341,15 @@ LRESULT WinRaster::onKeyDown(int chr, int RepCount, int Flags)
     }
     break;
 
+  case 'X':
+    if (ControlKey) {
+      TextDoc selText = pDoc->getSelectedText();
+      copyTextToClipboard(_hWnd, selText);
+
+      pDoc->deleteSelectedText();
+    }
+    break;
+
   case 'Y':
     if (ControlKey) {
       pDoc->redo();

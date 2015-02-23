@@ -458,6 +458,12 @@ TextDoc TextDocument::getSelectedText() const
 }
 
 // ----------------------------------------------------------------------------
+void TextDocument::deleteSelectedText()
+{
+  _deleteSelection();
+}
+
+// ----------------------------------------------------------------------------
 char TextDocument::_getChar(const TextPos& pos) const
 {
   if (pos.line < _Doc.getLineCount())
