@@ -149,18 +149,12 @@ retcode TextDocument::moveLeft(bool Select)
 {
   _handleSelection(Select, true);
 
-  if (_Cursor.column > 0) {
-    _Cursor.column--;
-    _CursorVersion++;
+  if (_Cursor > TextPos(0, 0)) {
+    _Cursor = _Doc.getPrevPos(_Cursor);
     return rcSuccess;
-  } else if (_Cursor.line > 0) {
-    _Cursor.line--;
-    _Cursor.column = _Doc.getLineLength(_Cursor.line);
-    _CursorVersion++;
-    return rcSuccess;
+  } else {
+    return rcOutOfRange;
   }
-  
-  return rcOutOfRange;
 }
 
 // ----------------------------------------------------------------------------
@@ -168,14 +162,8 @@ retcode TextDocument::moveRight(bool Select)
 {
   _handleSelection(Select, true);
 
-  if (_Cursor.column < _Doc.getLineLength(_Cursor.line)) {
-    _Cursor.column++;
-    _CursorVersion++;
-    return rcSuccess;
-  } else if (_Cursor.line < _Doc.getLineCount()-1) {
-    _Cursor.line++;
-    _Cursor.column = 0;
-    _CursorVersion++;
+  if (_Cursor < _Doc.getEndOfDoc()) {
+    _Cursor = _Doc.getNextPos(_Cursor);
     return rcSuccess;
   } else {
     return rcOutOfRange;
