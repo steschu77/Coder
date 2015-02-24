@@ -67,8 +67,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int cmdShow)
   WinCoder* pWinCoder;
 
   // create the window
-  if (failed(_WinFactory.createWindow(pDoc, &pWinCoder)))
+  if (failed(_WinFactory.createWindow(pDoc, &pWinCoder))) {
     return -1;
+  }
 
   doMessageLoop();
   return 0;

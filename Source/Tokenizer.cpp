@@ -93,7 +93,6 @@ void updateTextDoc(TokenizedFile& file, const TextDoc& doc)
   size_t cLines = doc.getLineCount();
   file.initialStates.resize(cLines);
 
-  Tokenizer::state_t state = Tokenizer::sWhiteSpace;
   Tokenizer::state_t last  = Tokenizer::sWhiteSpace;
   for (size_t i = 0; i < cLines; i++)
   {
@@ -102,14 +101,10 @@ void updateTextDoc(TokenizedFile& file, const TextDoc& doc)
 
     Tokenizer tk(line, last);
 
+    Tokenizer::state_t state;
     Tokenizer::token_t token;
-    while ((state = tk.nextToken(&token)) < Tokenizer::sError0)
-    {
+    while ((state = tk.nextToken(&token)) < Tokenizer::sError0) {
       last = state;
-    }
-
-    if (state >= Tokenizer::sError0) {
-      state = Tokenizer::sWhiteSpace;
     }
   }
 }
