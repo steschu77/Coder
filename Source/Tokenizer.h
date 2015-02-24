@@ -7,8 +7,6 @@
 class Tokenizer
 {
 public:
-  Tokenizer(const std::string& line);
-  
   enum state_t
   {
     sWhiteSpace,
@@ -59,6 +57,8 @@ public:
   {
     size_t p0, p1, px;
     token_type_t Type;
+    std::string id;
+    Keywords keyword;
   };
 
   struct char_t
@@ -69,8 +69,12 @@ public:
     int chr;
   };
   
+  Tokenizer(const std::string& line, state_t initialState=sWhiteSpace);
+
   bool nextChar(char_t* pChr);
-  bool nextToken(token_t* pToken);
+  state_t nextToken(token_t* pToken);
+
+  std::string _line;
 
   state_t _State;
   token_t _CurrentToken;

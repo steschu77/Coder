@@ -16,10 +16,11 @@ static int compareStrings(const void* p0, const void* p1)
 }
 
 // ----------------------------------------------------------------------------
-retcode find(const char* s)
+size_t find(const char* s)
 {
-  void *p = std::bsearch(&s, &gstrKeywords[0], cpp_cKeywords, sizeof(const char*), compareStrings);
-  return (p != nullptr) ? rcSuccess : rcNotFound;
+  const char** pBase = &gstrKeywords[0];
+  const char** p = static_cast<const char**>(std::bsearch(&s, pBase, cpp_cKeywords, sizeof(const char*), compareStrings));
+  return (p != nullptr) ? p - pBase : cpp_cKeywords;
 }
 
 // ----------------------------------------------------------------------------
@@ -42,15 +43,8 @@ void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& l
   Tokenizer tk(line);
 
   Tokenizer::token_t t;
-  while (tk.nextToken(&t))
+  while (tk.nextToken(&t) < Tokenizer::sError0)
   {
-    if (t.Type == Tokenizer::tIdentifier) {
-      std::string Id = line.substr(t.p0, t.p1-t.p0+1);
-      if (find(Id.c_str()) == rcSuccess) {
-        t.Type = Tokenizer::tKeyword;
-      }
-    }
-    
     while (idx < t.p0) {
       tl[idx].colText = gConfig.Colors.colWhiteSpace;
       tl[idx].colBkg  = gConfig.Colors.bkgEditor;
@@ -93,8 +87,9 @@ void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& l
 }
 
 // ----------------------------------------------------------------------------
-Tokenizer::Tokenizer(const std::string& line)
-: _State(sWhiteSpace)
+Tokenizer::Tokenizer(const std::string& line, state_t initialState)
+: _line(line)
+, _State(initialState)
 {
   _StateFn[sWhiteSpace]  = &Tokenizer::_sWhiteSpace;
   _StateFn[sIdentifier]  = &Tokenizer::_sIdentifier;
@@ -151,7 +146,7 @@ bool Tokenizer::nextChar(char_t* pChr)
 }
 
 // ----------------------------------------------------------------------------
-bool Tokenizer::nextToken(Tokenizer::token_t* pToken)
+Tokenizer::state_t Tokenizer::nextToken(Tokenizer::token_t* pToken)
 {
   _CurrentToken.p0 = std::string::npos;
   _CurrentToken.p1 = std::string::npos;
@@ -162,16 +157,26 @@ bool Tokenizer::nextToken(Tokenizer::token_t* pToken)
   while (nextChar(&chr))
   {
     if ((_State = (this->*_StateFn[_State])(chr)) == sMax) {
-      return false;
+      return sError0;
     }
 
-    if (_CurrentToken.p1 != std::string::npos) {
+    token_t& t = _CurrentToken;
+    if (t.p1 != std::string::npos)
+    {
+      if (t.Type == Tokenizer::tIdentifier) {
+        t.id = _line.substr(t.p0, t.p1-t.p0+1);
+        t.keyword = static_cast<Keywords>(find(t.id.c_str()));
+        if (t.keyword < cpp_cKeywords) {
+          t.Type = Tokenizer::tKeyword;
+        }
+      }
+
       *pToken = _CurrentToken;
-      return true;
+      return _State;
     }
   }
   
-  return false;
+  return sError0;
 }
 
 // ----------------------------------------------------------------------------
