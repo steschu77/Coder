@@ -387,14 +387,14 @@ retcode TextDocument::deleteLine()
 // ----------------------------------------------------------------------------
 retcode TextDocument::undo()
 {
-  _Doc.undo();
+  _Doc.undo(&_Cursor);
   return rcSuccess;
 }
 
 // ----------------------------------------------------------------------------
 retcode TextDocument::redo()
 {
-  _Doc.redo();
+  _Doc.redo(&_Cursor);
   return rcSuccess;
 }
 

@@ -71,31 +71,33 @@ void TextEdit::insertContent(const TextPos& p, const TextDoc& Content)
 }
 
 // ----------------------------------------------------------------------------
-void TextEdit::undo()
+void TextEdit::undo(TextPos* pPos)
 {
   if (_Hist.countUndoCommands() == 0) {
     return;
   }
 
-  _applyCommand(1, _Hist.undoCommand());
+  *pPos = _applyCommand(1, _Hist.undoCommand());
 }
 
 // ----------------------------------------------------------------------------
-void TextEdit::redo()
+void TextEdit::redo(TextPos* pPos)
 {
   if (_Hist.countRedoCommands() == 0) {
     return;
   }
 
-  _applyCommand(0, _Hist.redoCommand());
+  *pPos = _applyCommand(0, _Hist.redoCommand());
 }
 
 // ----------------------------------------------------------------------------
-void TextEdit::_applyCommand(uint type, const EditCommand& cmd)
+const TextPos& TextEdit::_applyCommand(uint type, const EditCommand& cmd)
 {
   if (cmd.type ^ type) {
     _Doc.insertContent(cmd.p0, cmd.content);
   } else {
     _Doc.deleteContent(cmd.p0, cmd.p1);
   }
+
+  return cmd.p0;
 }

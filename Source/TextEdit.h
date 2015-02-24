@@ -36,14 +36,14 @@ public:
   void insertContent(const TextPos& p, const TextDoc& Content);
   void deleteContent(const TextPos& p0, const TextPos& p1);
 
-  void undo();
-  void redo();
+  void undo(TextPos* pPos);
+  void redo(TextPos* pPos);
 
 private:
   EditableTextDoc _Doc;
   History _Hist;
 
-  void _applyCommand(uint type, const EditCommand& cmd);
+  const TextPos& _applyCommand(uint type, const EditCommand& cmd);
 };
 
 // ----------------------------------------------------------------------------
