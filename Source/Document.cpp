@@ -127,20 +127,24 @@ TextPos TextDocument::getCursor() const
 }
 
 // ----------------------------------------------------------------------------
-retcode TextDocument::setCursor(const TextPos& pos)
+retcode TextDocument::setCursor(const TextPos& p, bool Select)
 {
+  TextPos pos(p);
+
   size_t cLines = _Doc.getLineCount();
   if (pos.line >= cLines) {
-    return rcOutOfRange;
+    pos.line = cLines - 1;
   }
 
-  size_t Length = _Doc.getLineLength(pos.line);
-  if (pos.column > Length) {
-    return rcOutOfRange;
+  size_t cLine = _Doc.getLineLength(pos.line);
+  if (pos.column > cLine) {
+    pos.column = cLine;
   }
 
   _Cursor = pos;
   _CursorVersion++;
+
+  _handleSelection(Select, true);
   return rcSuccess;
 }
 
@@ -564,12 +568,12 @@ retcode TextDocument::insertOpeningBracket()
 // ----------------------------------------------------------------------------
 void TextDocument::_handleSelection(bool Select, bool Discard)
 {
-  _SelectionVersion++;
-
   if (Select && !_Selecting) {
     _startSelection();
   } else if (!Select && _Selecting) {
     _discardSelection();
+  } else if (Select) {
+    _SelectionVersion++;
   }
 }
 

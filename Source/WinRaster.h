@@ -123,6 +123,7 @@ protected:
     TextPos SelEnd;
   };
 
+  void _updateMouse(int x, int y, bool Select);
   void _updateState();
 
   void _updateCursor(const RenderState& State);

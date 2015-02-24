@@ -23,7 +23,7 @@ public:
   
   size_t getIndent(size_t line) const;
   TextPos getCursor() const;
-  retcode setCursor(const TextPos& pos);
+  retcode setCursor(const TextPos& pos, bool Select=false);
   
   retcode moveLeft(bool Select);
   retcode moveRight(bool Select);

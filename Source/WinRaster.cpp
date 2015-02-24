@@ -403,8 +403,11 @@ LRESULT WinRaster::onChar(char chr)
 }
 
 // --------------------------------------------------------------------------
-LRESULT WinRaster::onMouseMove(int, int, uint)
+LRESULT WinRaster::onMouseMove(int x, int y, uint flags)
 {
+  if ((flags & MK_LBUTTON) != 0) {
+    _updateMouse(x, y, true);
+  }
   return 0;
 }
 
@@ -412,6 +415,8 @@ LRESULT WinRaster::onMouseMove(int, int, uint)
 LRESULT WinRaster::onLButtonDown(int x, int y, uint)
 {
   SetFocus(_hWnd);
+  _updateMouse(x, y, false);
+
   return 0;
 }
 
@@ -486,6 +491,24 @@ void WinRaster::_onCursorDirty()
 void WinRaster::onSearchResultDirty()
 {
   _updateState();
+}
+
+// --------------------------------------------------------------------------
+void WinRaster::_updateMouse(int x, int y, bool Select)
+{
+  TextDocument* pDoc = _pParent->getDocument();
+  if (pDoc == nullptr) {
+    return;
+  }
+
+  size_t xOfsOld = _RenderedState.Offset.column;
+  size_t yOfsOld = _RenderedState.Offset.line;
+
+  int xPos = x / _Width;
+  int yPos = y / _Height;
+
+  pDoc->setCursor(TextPos(yPos+yOfsOld, xPos+xOfsOld), Select);
+  _onCursorDirty();
 }
 
 // ----------------------------------------------------------------------------
