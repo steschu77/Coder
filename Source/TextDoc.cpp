@@ -223,16 +223,17 @@ void EditableTextDoc::insertContent(const TextPos& p, const TextDoc& Content)
 {
   if (Content.getLineCount() == 1) {
     Lines.at(p.line).insert(p.column, Content.Lines[0]);
-    return;
   }
+  else
+  {
+    std::string l1 = Lines.at(p.line).substr(p.column);
 
-  std::string l1 = Lines.at(p.line).substr(p.column);
-
-  Lines[p.line].erase(p.column);
-  Lines[p.line].append(Content.Lines[0]);
+    Lines[p.line].erase(p.column);
+    Lines[p.line].append(Content.Lines[0]);
   
-  std::vector<std::string>::iterator it = Lines.insert(Lines.begin() + p.line + 1, Content.Lines.begin() + 1, Content.Lines.end());
-  (it + Content.Lines.size() - 2)->append(l1);
+    std::vector<std::string>::iterator it = Lines.insert(Lines.begin() + p.line + 1, Content.Lines.begin() + 1, Content.Lines.end());
+    (it + Content.Lines.size() - 2)->append(l1);
+  }
 
   Version++;
 }
