@@ -2,84 +2,9 @@
 #include <Source/Canvas.h>
 #include <Source/UTF8Tools.h>
 #include <Source/Config.h>
+#include <Source/CPPKeywords.h>
 
 #include "Tokenizer.h"
-
-const char* gKeywords[]
-{
-  "alignas",
-  "alignof",
-  "asm",
-  "auto",
-  "bool",
-  "break",
-  "case",
-  "catch",
-  "char",
-  "char16_t",
-  "char32_t",
-  "class",
-  "const",
-  "constexpr",
-  "const_cast",
-  "continue",
-  "decltype",
-  "default",
-  "delete",
-  "do",
-  "double",
-  "dynamic_cast",
-  "else",
-  "enum",
-  "explicit",
-  "export",
-  "extern",
-  "false",
-  "float",
-  "for",
-  "friend",
-  "goto",
-  "if",
-  "inline",
-  "int",
-  "long",
-  "mutable",
-  "namespace",
-  "new",
-  "noexcept",
-  "nullptr",
-  "operator",
-  "private",
-  "protected",
-  "public",
-  "register",
-  "reinterpret_cast",
-  "return",
-  "short",
-  "signed",
-  "sizeof",
-  "static",
-  "static_assert",
-  "static_cast",
-  "struct",
-  "switch",
-  "template",
-  "this while",
-  "thread_local",
-  "throw",
-  "true",
-  "try",
-  "typedef",
-  "typeid",
-  "typename",
-  "union",
-  "unsigned",
-  "using",
-  "virtual",
-  "void",
-  "volatile",
-  "wchar_t"
-};
 
 // ----------------------------------------------------------------------------
 static int compareStrings(const void* p0, const void* p1)
@@ -93,7 +18,7 @@ static int compareStrings(const void* p0, const void* p1)
 // ----------------------------------------------------------------------------
 retcode find(const char* s)
 {
-  void *p = std::bsearch(&s, &gKeywords[0], countof(gKeywords), sizeof(const char*), compareStrings);
+  void *p = std::bsearch(&s, &gstrKeywords[0], cpp_cKeywords, sizeof(const char*), compareStrings);
   return (p != nullptr) ? rcSuccess : rcNotFound;
 }
 

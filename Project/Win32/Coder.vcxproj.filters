@@ -89,6 +89,9 @@
     <ClCompile Include="..\..\Source\TextEdit.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\CPPKeywords.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Resource.h">
@@ -164,6 +167,9 @@
       <Filter>Canvas</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\TextEdit.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CPPKeywords.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

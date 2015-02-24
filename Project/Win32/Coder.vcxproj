@@ -86,6 +86,7 @@
     <ClInclude Include="..\..\Source\Canvas.h" />
     <ClInclude Include="..\..\Source\Clipboard.h" />
     <ClInclude Include="..\..\Source\Config.h" />
+    <ClInclude Include="..\..\Source\CPPKeywords.h" />
     <ClInclude Include="..\..\Source\Document.h" />
     <ClInclude Include="..\..\Source\FileSystem.h" />
     <ClInclude Include="..\..\Source\FixedSizeFont.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="..\..\Source\Coder.cpp" />
     <ClCompile Include="..\..\Source\Config.cpp" />
     <ClCompile Include="..\..\Source\ConvertUTF16.cpp" />
+    <ClCompile Include="..\..\Source\CPPKeywords.cpp" />
     <ClCompile Include="..\..\Source\Document.cpp" />
     <ClCompile Include="..\..\Source\FileSystem.cpp" />
     <ClCompile Include="..\..\Source\FixedSizeFont.cpp" />
