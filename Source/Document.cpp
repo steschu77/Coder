@@ -397,6 +397,15 @@ retcode TextDocument::redo()
 }
 
 // ----------------------------------------------------------------------------
+retcode TextDocument::selectWord(const TextPos& pos)
+{
+  setCursor(pos, false);
+  movePrevWord(false);
+  moveNextWord(true);
+  return rcSuccess;
+}
+
+// ----------------------------------------------------------------------------
 bool TextDocument::getSelection(TextPos* pP0, TextPos* pP1) const
 {
   if (!_Selecting) {

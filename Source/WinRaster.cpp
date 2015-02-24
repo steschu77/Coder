@@ -427,8 +427,17 @@ LRESULT WinRaster::onLButtonUp(int, int, uint)
 }
 
 // --------------------------------------------------------------------------
-LRESULT WinRaster::onLButtonDblClk(int, int, uint)
+LRESULT WinRaster::onLButtonDblClk(int x, int y, uint)
 {
+  TextDocument* pDoc = _pParent->getDocument();
+  if (pDoc == nullptr) {
+    return 0;
+  }
+
+  TextPos pos = _getTextPos(x, y);
+  pDoc->selectWord(pos);
+
+  _onCursorDirty();
   return 0;
 }
 
@@ -491,6 +500,23 @@ void WinRaster::_onCursorDirty()
 void WinRaster::onSearchResultDirty()
 {
   _updateState();
+}
+
+// --------------------------------------------------------------------------
+TextPos WinRaster::_getTextPos(int x, int y)
+{
+  TextDocument* pDoc = _pParent->getDocument();
+  if (pDoc == nullptr) {
+    return TextPos(0,0);
+  }
+
+  size_t xOfsOld = _RenderedState.Offset.column;
+  size_t yOfsOld = _RenderedState.Offset.line;
+
+  int xPos = x / _Width;
+  int yPos = y / _Height;
+
+  return TextPos(yPos+yOfsOld, xPos+xOfsOld);
 }
 
 // --------------------------------------------------------------------------

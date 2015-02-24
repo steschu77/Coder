@@ -10,6 +10,7 @@ void WinFactory::_registerClass(const wchar* ClassName, HBRUSH hbrBackground, co
   WNDCLASSEXW wcex = { 0 };
   
   wcex.cbSize        = sizeof(WNDCLASSEX); 
+  wcex.style         = CS_DBLCLKS;
   wcex.lpfnWndProc   = (WNDPROC)__procStatic1;
   wcex.hInstance     = ghInstance;
   wcex.hIcon         = strIcon != nullptr ? LoadIcon(ghInstance, strIcon) : nullptr;

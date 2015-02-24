@@ -48,6 +48,8 @@ public:
   retcode undo();
   retcode redo();
 
+  retcode selectWord(const TextPos& pos);
+
   bool getSelection(TextPos* pP0, TextPos* pP1) const;
   bool hasSelectedText(size_t line) const;
   bool isSelected(size_t line, size_t column) const;

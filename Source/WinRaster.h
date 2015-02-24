@@ -61,6 +61,8 @@ protected:
   void _onCursorDirty();
   void _onSelectionDirty();
 
+  TextPos _getTextPos(int x, int y);
+
   void _ensureCursorVisibility();
   void _placeCursorInVisibleRange();
   void _updateTitle();
