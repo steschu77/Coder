@@ -2,7 +2,6 @@
 #include <Source/Canvas.h>
 #include <Source/UTF8Tools.h>
 #include <Source/Config.h>
-#include <Source/CPPKeywords.h>
 
 #include "Tokenizer.h"
 
@@ -24,7 +23,7 @@ size_t find(const char* s)
 }
 
 // ----------------------------------------------------------------------------
-void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line)
+void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line, Tokenizer::state_t initialState)
 {
   uint32 gColors[]
   {
@@ -40,7 +39,7 @@ void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& l
   size_t cLength = line.length();
   size_t idx = 0;
   
-  Tokenizer tk(line);
+  Tokenizer tk(line, initialState);
 
   Tokenizer::token_t t;
   while (tk.nextToken(&t) < Tokenizer::sError0)
@@ -83,6 +82,35 @@ void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& l
       break;
     }
     idx++;
+  }
+}
+
+#include <Source/TextDoc.h>
+
+// ============================================================================
+void updateTextDoc(TokenizedFile& file, const TextDoc& doc)
+{
+  size_t cLines = doc.getLineCount();
+  file.initialStates.resize(cLines);
+
+  Tokenizer::state_t state = Tokenizer::sWhiteSpace;
+  Tokenizer::state_t last  = Tokenizer::sWhiteSpace;
+  for (size_t i = 0; i < cLines; i++)
+  {
+    const std::string& line = doc.getLineAt(i);
+    file.initialStates[i] = last;
+
+    Tokenizer tk(line, last);
+
+    Tokenizer::token_t token;
+    while ((state = tk.nextToken(&token)) < Tokenizer::sError0)
+    {
+      last = state;
+    }
+
+    if (state >= Tokenizer::sError0) {
+      state = Tokenizer::sWhiteSpace;
+    }
   }
 }
 
@@ -157,7 +185,7 @@ Tokenizer::state_t Tokenizer::nextToken(Tokenizer::token_t* pToken)
   while (nextChar(&chr))
   {
     if ((_State = (this->*_StateFn[_State])(chr)) == sMax) {
-      return sError0;
+      return sMax;
     }
 
     token_t& t = _CurrentToken;
@@ -176,7 +204,7 @@ Tokenizer::state_t Tokenizer::nextToken(Tokenizer::token_t* pToken)
     }
   }
   
-  return sError0;
+  return sMax;
 }
 
 // ----------------------------------------------------------------------------
@@ -557,6 +585,10 @@ Tokenizer::state_t Tokenizer::_sCommentA(const char_t& chr)
 // ----------------------------------------------------------------------------
 Tokenizer::state_t Tokenizer::_sCommentB(const char_t& chr)
 {
+  if (chr.pos == 0) {
+    x(tComment); z0(chr.pos);
+  }
+
   switch (chr.chr)
   {
   case '*': return sCommentB1;

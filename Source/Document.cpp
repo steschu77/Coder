@@ -41,6 +41,7 @@ TextDocument::TextDocument(const char* Path)
 , _Selecting(false)
 , _CursorVersion(0)
 , _SelectionVersion(0)
+, _DocumentVersion(0)
 , _PersistentVersion(0)
 {
 }
@@ -72,6 +73,7 @@ retcode TextDocument::load()
   
   delete[] pDoc;
   
+  updateTextDoc(_File, _Doc.getDoc());
   return rcSuccess;
 }
 
@@ -478,6 +480,12 @@ void TextDocument::deleteSelectedText()
 }
 
 // ----------------------------------------------------------------------------
+Tokenizer::state_t TextDocument::getInitialStateAt(size_t line) const
+{
+  return _File.initialStates.at(line);
+}
+
+// ----------------------------------------------------------------------------
 char TextDocument::_getChar(const TextPos& pos) const
 {
   if (pos.line < _Doc.getLineCount())
@@ -617,3 +625,17 @@ void TextDocument::_deleteSelection()
 
   _Cursor = p0;
 }
+
+// ----------------------------------------------------------------------------
+uint TextDocument::getDocumentVersion()
+{
+  uint Version = _Doc.getVersion();
+  if (Version != _DocumentVersion)
+  {
+    updateTextDoc(_File, _Doc.getDoc());
+    _DocumentVersion = Version;
+  }
+
+  return Version;
+}
+

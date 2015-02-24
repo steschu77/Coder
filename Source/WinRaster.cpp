@@ -602,7 +602,7 @@ void WinRaster::_placeCursorInVisibleRange()
 }
 
 // ----------------------------------------------------------------------------
-void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line);
+void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line, Tokenizer::state_t initialState);
 void renderSearchResults(std::vector<gfx::TextChar>& text, const SearchEngine& Search, size_t line);
 
 // ----------------------------------------------------------------------------
@@ -701,7 +701,7 @@ void WinRaster::_updateCanvas(const RenderState& State)
       if (cLength > xOfs)
       {
         std::vector<gfx::TextChar> tl(cLength + 1);
-        renderSyntaxHilighting(tl, strLine);
+        renderSyntaxHilighting(tl, strLine, pDocument->getInitialStateAt(yDoc));
         renderTextSelection(tl, y+yOfs, pDocument);
         renderSearchResults(tl, Search, y+yOfs);
 

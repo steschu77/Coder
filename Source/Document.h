@@ -4,7 +4,8 @@
 \*****************************************************************************/
 #pragma once
 
-#include "TextEdit.h"
+#include <Source/TextEdit.h>
+#include <Source/Tokenizer.h>
 
 // ============================================================================
 class TextDocument
@@ -57,7 +58,9 @@ public:
   TextDoc getSelectedText() const;
   void deleteSelectedText();
 
-  uint getDocumentVersion() const;
+  Tokenizer::state_t getInitialStateAt(size_t line) const;
+
+  uint getDocumentVersion();
   uint getCursorVersion() const;
   uint getSelectionVersion() const;
 
@@ -67,6 +70,7 @@ private:
   std::string _Path;
 
   TextEdit _Doc;
+  TokenizedFile _File;
 
   TextPos _Cursor;
   TextPos _SelectionStart;
@@ -76,6 +80,8 @@ private:
   // Versions for fast change detection
   uint _CursorVersion;
   uint _SelectionVersion;
+
+  uint _DocumentVersion;
 
   uint _PersistentVersion;
 
@@ -103,12 +109,6 @@ private:
 inline const TextDoc& TextDocument::getDoc() const
 {
   return _Doc.getDoc();
-}
-
-// ----------------------------------------------------------------------------
-inline uint TextDocument::getDocumentVersion() const
-{
-  return _Doc.getVersion();
 }
 
 // ----------------------------------------------------------------------------

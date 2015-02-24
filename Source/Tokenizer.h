@@ -4,6 +4,8 @@
 \*****************************************************************************/
 #pragma once
 
+#include <Source/CPPKeywords.h>
+
 class Tokenizer
 {
 public:
@@ -124,3 +126,15 @@ public:
   void z1(size_t pos);
   void zx(size_t pos);
 };
+
+// ============================================================================
+struct TokenizedFile
+{
+  std::vector<Tokenizer::state_t> initialStates;
+};
+
+// ============================================================================
+class TextDoc;
+
+// ============================================================================
+void updateTextDoc(TokenizedFile& file, const TextDoc& doc);
