@@ -25,6 +25,9 @@ public:
   TextPos getNextPos(const TextPos& Pos) const;
   TextPos getPrevPos(const TextPos& Pos) const;
 
+  void load(const char* Path);
+  void save(const char* Path) const;
+
   void replaceContent(char* pDoc, size_t Length);
 
   void insertChars(const TextPos& pos, const char* ch);

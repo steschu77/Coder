@@ -5,9 +5,6 @@
 #pragma once
 
 // ============================================================================
-extern const char* gstrKeywords[];
-
-// ============================================================================
 enum Keywords
 {
   cpp_alignas,
@@ -86,3 +83,14 @@ enum Keywords
   cpp_cKeywords
 };
 
+// ============================================================================
+extern const char* gstrKeywords[];
+
+extern const Keywords gSimpleTypeSpecifier[];
+extern const size_t gcSimpleTypeSpecifier;
+
+extern const Keywords gStorageClassSpecifier[];
+extern const size_t gcStorageClassSpecifier;
+
+extern const Keywords gFunctionSpecifier[];
+extern const size_t gcFunctionSpecifier;

@@ -11,29 +11,6 @@ static bool isIdentifier(char ch)
   return ch  == '_' || isAlpha(ch) || isDigit(ch);
 }
 
-// ============================================================================
-char* readTextFile(const char* Path, size_t* pLength)
-{
-  FILE* f = fopen(Path, "rb");
-
-  if (f == nullptr) {
-    return nullptr;
-  }
-
-  fseek(f, 0, SEEK_END);
-  size_t FileSize = ftell(f);
-  fseek(f, 0, SEEK_SET);
-  
-  char* pFile = new char [FileSize+1];
-  fread(pFile, FileSize, 1, f);
-  fclose(f);
-  
-  pFile[FileSize] = '\0';
-  *pLength = FileSize;
-  
-  return pFile;
-}
-
 // ----------------------------------------------------------------------------
 TextDocument::TextDocument(const char* Path)
 : _Path(Path)
@@ -61,17 +38,9 @@ bool TextDocument::isDirty() const
 // ----------------------------------------------------------------------------
 retcode TextDocument::load()
 {
-  size_t Length = 0;
-  char* pDoc = readTextFile(_Path.c_str(), &Length);
-
-  if (pDoc == nullptr) {
-    return rcFileNotFound;
-  }
+  _Doc.load(_Path.c_str());
   
-  _Doc.replaceContent(pDoc, Length);
   _PersistentVersion = _Doc.getVersion();
-  
-  delete[] pDoc;
   
   updateTextDoc(_File, _Doc.getDoc());
   return rcSuccess;
@@ -80,24 +49,7 @@ retcode TextDocument::load()
 // ----------------------------------------------------------------------------
 retcode TextDocument::save()
 {
-  FILE* f = fopen(_Path.c_str(), "wb");
-  const TextDoc& doc = _Doc.getDoc();
-
-  size_t cLines = doc.getLineCount();
-
-  for (size_t i = 0; i < cLines; i++)
-  {
-    size_t cLength = doc.getLineLength(i);
-    const char* pLine = doc.getLineAt(i).c_str();
-
-    if (i > 0) {
-      fwrite("\n", 1, 1, f);
-    }
-    fwrite(pLine, 1, cLength, f);
-  }
-
-  fclose(f);
-
+  _Doc.save(_Path.c_str());
   _PersistentVersion = _Doc.getVersion();
   return rcSuccess;
 }

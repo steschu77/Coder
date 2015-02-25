@@ -7,6 +7,18 @@ TextEdit::TextEdit()
 }
 
 // ----------------------------------------------------------------------------
+void TextEdit::load(const char* Path)
+{
+  _Doc = loadTextDoc(Path);
+}
+
+// ----------------------------------------------------------------------------
+void TextEdit::save(const char* Path) const
+{
+  saveTextDoc(Path, _Doc);
+}
+
+// ----------------------------------------------------------------------------
 void TextEdit::replaceContent(char* pDoc, size_t Length)
 {
   _Doc.replaceContent(pDoc, Length);

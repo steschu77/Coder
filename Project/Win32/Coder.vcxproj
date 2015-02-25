@@ -99,6 +99,7 @@
     <ClInclude Include="..\..\Source\TextDoc.h" />
     <ClInclude Include="..\..\Source\TextEdit.h" />
     <ClInclude Include="..\..\Source\TextPos.h" />
+    <ClInclude Include="..\..\Source\TokenizedFile.h" />
     <ClInclude Include="..\..\Source\Tokenizer.h" />
     <ClInclude Include="..\..\Source\ToolBox.h" />
     <ClInclude Include="..\..\Source\TrueType.h" />
@@ -129,8 +130,10 @@
     <ClCompile Include="..\..\Source\History.cpp" />
     <ClCompile Include="..\..\Source\SearchEngine.cpp" />
     <ClCompile Include="..\..\Source\SearchResultRenderer.cpp" />
+    <ClCompile Include="..\..\Source\SyntaxRenderer.cpp" />
     <ClCompile Include="..\..\Source\TextDoc.cpp" />
     <ClCompile Include="..\..\Source\TextEdit.cpp" />
+    <ClCompile Include="..\..\Source\TokenizedFile.cpp" />
     <ClCompile Include="..\..\Source\Tokenizer.cpp" />
     <ClCompile Include="..\..\Source\TrueType.cpp" />
     <ClCompile Include="..\..\Source\UTF8ToInt.cpp" />

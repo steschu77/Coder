@@ -237,3 +237,64 @@ void EditableTextDoc::insertContent(const TextPos& p, const TextDoc& Content)
 
   Version++;
 }
+
+// ============================================================================
+char* readTextFile(const char* Path, size_t* pLength)
+{
+  FILE* f = fopen(Path, "rb");
+
+  if (f == nullptr) {
+    return nullptr;
+  }
+
+  fseek(f, 0, SEEK_END);
+  size_t FileSize = ftell(f);
+  fseek(f, 0, SEEK_SET);
+  
+  char* pFile = new char [FileSize+1];
+  fread(pFile, FileSize, 1, f);
+  fclose(f);
+  
+  pFile[FileSize] = '\0';
+  *pLength = FileSize;
+  
+  return pFile;
+}
+
+// ----------------------------------------------------------------------------
+EditableTextDoc loadTextDoc(const char* Path)
+{
+  EditableTextDoc doc;
+
+  size_t Length = 0;
+  char* pDoc = readTextFile(Path, &Length);
+
+  if (pDoc != nullptr)
+  {
+    doc.replaceContent(pDoc, Length);
+    delete[] pDoc;
+  }
+  
+  return doc;
+}
+
+// ----------------------------------------------------------------------------
+void saveTextDoc(const char* Path, const TextDoc& doc)
+{
+  FILE* f = fopen(Path, "wb");
+
+  size_t cLines = doc.getLineCount();
+
+  for (size_t i = 0; i < cLines; i++)
+  {
+    size_t cLength = doc.getLineLength(i);
+    const char* pLine = doc.getLineAt(i).c_str();
+
+    if (i > 0) {
+      fwrite("\n", 1, 1, f);
+    }
+    fwrite(pLine, 1, cLength, f);
+  }
+
+  fclose(f);
+}

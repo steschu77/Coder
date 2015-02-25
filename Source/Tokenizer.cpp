@@ -15,6 +15,15 @@ static int compareStrings(const void* p0, const void* p1)
 }
 
 // ----------------------------------------------------------------------------
+static int compareKeywords(const void* p0, const void* p1)
+{
+  const Keywords* k0 = (const Keywords*)p0;
+  const Keywords* k1 = (const Keywords*)p1;
+  
+  return *k0 - *k1;
+}
+
+// ----------------------------------------------------------------------------
 size_t find(const char* s)
 {
   const char** pBase = &gstrKeywords[0];
@@ -23,90 +32,10 @@ size_t find(const char* s)
 }
 
 // ----------------------------------------------------------------------------
-void renderSyntaxHilighting(std::vector<gfx::TextChar>& tl, const std::string& line, Tokenizer::state_t initialState)
+bool find(Keywords key, const Keywords* base, size_t count)
 {
-  uint32 gColors[]
-  {
-    gConfig.Colors.colNumber,
-    gConfig.Colors.colString,
-    gConfig.Colors.colIdentifier,
-    gConfig.Colors.colOperator,
-    gConfig.Colors.colComment,
-    gConfig.Colors.colPreProcessor,
-    gConfig.Colors.colKeyword,
-  };
-
-  size_t cLength = line.length();
-  size_t idx = 0;
-  
-  Tokenizer tk(line, initialState);
-
-  Tokenizer::token_t t;
-  while (tk.nextToken(&t) < Tokenizer::sError0)
-  {
-    while (idx < t.p0) {
-      tl[idx].colText = gConfig.Colors.colWhiteSpace;
-      tl[idx].colBkg  = gConfig.Colors.bkgEditor;
-      switch (line[idx])
-      {
-      case ' ':
-        tl[idx].ch = 0xb7;
-        break;
-      default:
-        tl[idx].ch = line[idx];
-        break;
-      }
-      idx++;
-    }
-    
-    while (idx <= t.p1) {
-      tl[idx].colText = gColors[t.Type];
-      tl[idx].colBkg  = gConfig.Colors.bkgEditor;
-      tl[idx].ch = line[idx];
-      tl[idx].bold = t.Type == Tokenizer::tPreProcessor;
-      tl[idx].underline = t.px != std::string::npos;
-      tl[idx].colLine = 0x00d50707;
-      idx++;
-    }
-  }
-
-  while (idx < cLength) {
-    tl[idx].colText = gConfig.Colors.colWhiteSpace;
-    switch (line[idx])
-    {
-    case ' ':
-      tl[idx].ch = 0xb7;
-      break;
-    default:
-      tl[idx].ch = line[idx];
-      break;
-    }
-    idx++;
-  }
-}
-
-#include <Source/TextDoc.h>
-
-// ============================================================================
-void updateTextDoc(TokenizedFile& file, const TextDoc& doc)
-{
-  size_t cLines = doc.getLineCount();
-  file.initialStates.resize(cLines);
-
-  Tokenizer::state_t last  = Tokenizer::sWhiteSpace;
-  for (size_t i = 0; i < cLines; i++)
-  {
-    const std::string& line = doc.getLineAt(i);
-    file.initialStates[i] = last;
-
-    Tokenizer tk(line, last);
-
-    Tokenizer::state_t state;
-    Tokenizer::token_t token;
-    while ((state = tk.nextToken(&token)) < Tokenizer::sError0) {
-      last = state;
-    }
-  }
+  const Keywords* p = static_cast<const Keywords*>(std::bsearch(&key, base, count, sizeof(Keywords*), compareKeywords));
+  return (p != nullptr);
 }
 
 // ----------------------------------------------------------------------------
@@ -174,6 +103,8 @@ Tokenizer::state_t Tokenizer::nextToken(Tokenizer::token_t* pToken)
   _CurrentToken.p0 = std::string::npos;
   _CurrentToken.p1 = std::string::npos;
   _CurrentToken.px = std::string::npos;
+  _CurrentToken.id.clear();
+  _CurrentToken.flags = 0;
   
   char_t chr;
 
@@ -186,11 +117,24 @@ Tokenizer::state_t Tokenizer::nextToken(Tokenizer::token_t* pToken)
     token_t& t = _CurrentToken;
     if (t.p1 != std::string::npos)
     {
-      if (t.Type == Tokenizer::tIdentifier) {
+      if (t.type == Tokenizer::tIdentifier)
+      {
         t.id = _line.substr(t.p0, t.p1-t.p0+1);
         t.keyword = static_cast<Keywords>(find(t.id.c_str()));
-        if (t.keyword < cpp_cKeywords) {
-          t.Type = Tokenizer::tKeyword;
+
+        if (t.keyword < cpp_cKeywords)
+        {
+          t.type = Tokenizer::tKeyword;
+
+          if (find(t.keyword, gSimpleTypeSpecifier, gcSimpleTypeSpecifier)) {
+            t.flags |= flagTypeSpecifier;
+          }
+          if (find(t.keyword, gStorageClassSpecifier, gcStorageClassSpecifier)) {
+            t.flags |= flagStorageClassSpecifier;
+          }
+          if (find(t.keyword, gFunctionSpecifier, gcFunctionSpecifier)) {
+            t.flags |= flagFunctionSpecifier;
+          }
         }
       }
 
@@ -228,24 +172,25 @@ Tokenizer::state_t Tokenizer::_sWhiteSpace(const Tokenizer::char_t& chr)
   case '>':  z0(chr.pos); return sPreGT;
   case '|':  z0(chr.pos); return sPreOr;
   case '&':  z0(chr.pos); return sPreAnd;
-  case '!':  z0(chr.pos); return sPreNot;
   case '^':  z0(chr.pos); return sPreXor;
+  case '!':  z0(chr.pos); return sPreNot;
   case '=':  z0(chr.pos); return sPreEqual;
   case '0':  z0(chr.pos); x(tNumber); return sPreNull;
   case '1': case '2': case '3':
   case '4': case '5': case '6':
   case '7': case '8': case '9':
              z0(chr.pos); x(tNumber); return sNumber;
-  case '~':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case '{':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case '}':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case '[':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case ']':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case '(':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case ')':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case ',':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case ';':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
-  case ':':  z0(chr.pos); x(tOperator); z1(); return sWhiteSpace;
+  case '~':  z0(chr.pos); xOp(opNeg); z1(); return sWhiteSpace;
+  case '{':  z0(chr.pos); xOp(opBraceOpen); z1(); return sWhiteSpace;
+  case '}':  z0(chr.pos); xOp(opBraceClose); z1(); return sWhiteSpace;
+  case '[':  z0(chr.pos); xOp(opBracketOpen); z1(); return sWhiteSpace;
+  case ']':  z0(chr.pos); xOp(opBracketClose); z1(); return sWhiteSpace;
+  case '(':  z0(chr.pos); xOp(opParenthesisOpen); z1(); return sWhiteSpace;
+  case ')':  z0(chr.pos); xOp(opParenthesisClose); z1(); return sWhiteSpace;
+  case ',':  z0(chr.pos); xOp(opKomma); z1(); return sWhiteSpace;
+  case ';':  z0(chr.pos); xOp(opSemicolon); z1(); return sWhiteSpace;
+  case '?':  z0(chr.pos); xOp(opQMark); z1(); return sWhiteSpace;
+  case ':':  z0(chr.pos); xOp(opColon); z1(); return sWhiteSpace;
   case '"':  z0(chr.pos); x(tString); return sString;
   case '\'': z0(chr.pos); x(tNumber); return sChar;
 
@@ -391,9 +336,9 @@ Tokenizer::state_t Tokenizer::_sPrePlus(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '+': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '+': xOp(opPlusPlus); z1(chr.pos); return sWhiteSpace;
+  case '=': xOp(opPlusAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opPlus); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -402,10 +347,10 @@ Tokenizer::state_t Tokenizer::_sPreMinus(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '-': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  case '>': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '-': xOp(opMinusMinus); z1(chr.pos); return sWhiteSpace;
+  case '=': xOp(opMinusAssign); z1(chr.pos); return sWhiteSpace;
+  case '>': xOp(opDeRef); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opMinus); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -416,8 +361,8 @@ Tokenizer::state_t Tokenizer::_sPreSlash(const char_t& chr)
   {
   case '/': x(tComment); return sCommentA;
   case '*': x(tComment); return sCommentB;
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opSlashAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opSlash); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -426,8 +371,8 @@ Tokenizer::state_t Tokenizer::_sPreModulo(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opModuloAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opModulo); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -436,8 +381,8 @@ Tokenizer::state_t Tokenizer::_sPreMul(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opStarAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opStar); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -446,8 +391,8 @@ Tokenizer::state_t Tokenizer::_sPreLT(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opLTorEqual); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opLT); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -456,8 +401,8 @@ Tokenizer::state_t Tokenizer::_sPreGT(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opGTorEqual); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opGT); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -466,8 +411,9 @@ Tokenizer::state_t Tokenizer::_sPreOr(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '|': xOp(opBoolOr); z1(chr.pos); return sWhiteSpace;
+  case '=': xOp(opOrAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opOr); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -476,18 +422,9 @@ Tokenizer::state_t Tokenizer::_sPreAnd(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
-  }
-}
-
-// ----------------------------------------------------------------------------
-Tokenizer::state_t Tokenizer::_sPreNot(const char_t& chr)
-{
-  switch (chr.chr)
-  {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '&': xOp(opBoolAnd); z1(chr.pos); return sWhiteSpace;
+  case '=': xOp(opAndAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opAnd); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -496,8 +433,18 @@ Tokenizer::state_t Tokenizer::_sPreXor(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opXorAssign); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opXor); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  }
+}
+
+// ----------------------------------------------------------------------------
+Tokenizer::state_t Tokenizer::_sPreNot(const char_t& chr)
+{
+  switch (chr.chr)
+  {
+  case '=': xOp(opUnequal); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opNot); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -506,8 +453,8 @@ Tokenizer::state_t Tokenizer::_sPreEqual(const char_t& chr)
 {
   switch (chr.chr)
   {
-  case '=': x(tOperator); z1(chr.pos); return sWhiteSpace;
-  default:  x(tOperator); z1(chr.pos-1); push(chr); return sWhiteSpace;
+  case '=': xOp(opEqual); z1(chr.pos); return sWhiteSpace;
+  default:  xOp(opAssign); z1(chr.pos-1); push(chr); return sWhiteSpace;
   }
 }
 
@@ -639,7 +586,14 @@ void Tokenizer::push(const char_t& chr)
 // ----------------------------------------------------------------------------
 void Tokenizer::x(token_type_t Token)
 {
-  _CurrentToken.Type = Token;
+  _CurrentToken.type = Token;
+}
+
+// ----------------------------------------------------------------------------
+void Tokenizer::xOp(operator_t op)
+{
+  _CurrentToken.type = tOperator;
+  _CurrentToken.op = op;
 }
 
 // ----------------------------------------------------------------------------

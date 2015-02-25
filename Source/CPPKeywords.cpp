@@ -1,6 +1,7 @@
 #include <Source/Headers.h>
 #include "CPPKeywords.h"
 
+// ============================================================================
 const char* gstrKeywords[]
 {
   "alignas",
@@ -77,3 +78,46 @@ const char* gstrKeywords[]
   "wchar_t",
   "while"
 };
+
+// ============================================================================
+const Keywords gSimpleTypeSpecifier[]
+{
+  cpp_auto,
+  cpp_bool,
+  cpp_char,
+  cpp_char16_t,
+  cpp_char32_t,
+  cpp_double,
+  cpp_float,
+  cpp_int,
+  cpp_long,
+  cpp_short,
+  cpp_signed,
+  cpp_unsigned,
+  cpp_void,
+  cpp_wchar_t,
+};
+
+const size_t gcSimpleTypeSpecifier = countof(gSimpleTypeSpecifier);
+
+// ============================================================================
+const Keywords gStorageClassSpecifier[]
+{
+  cpp_extern,
+  cpp_mutable,
+  cpp_register,
+  cpp_static,
+  cpp_thread_local,
+};
+
+const size_t gcStorageClassSpecifier = countof(gStorageClassSpecifier);
+
+// ============================================================================
+const Keywords gFunctionSpecifier[]
+{
+  cpp_explicit,
+  cpp_inline,
+  cpp_virtual,
+};
+
+const size_t gcFunctionSpecifier = countof(gFunctionSpecifier);

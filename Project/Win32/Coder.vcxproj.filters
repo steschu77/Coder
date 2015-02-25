@@ -92,6 +92,12 @@
     <ClCompile Include="..\..\Source\CPPKeywords.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\TokenizedFile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SyntaxRenderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Resource.h">
@@ -172,6 +178,7 @@
     <ClInclude Include="..\..\Source\CPPKeywords.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\TokenizedFile.h" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="..\..\Source\Coder.exe.manifest">

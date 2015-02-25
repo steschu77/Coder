@@ -57,3 +57,6 @@ inline uint EditableTextDoc::getVersion() const
 {
   return Version;
 }
+
+EditableTextDoc loadTextDoc(const char* Path);
+void saveTextDoc(const char* Path, const TextDoc& doc);

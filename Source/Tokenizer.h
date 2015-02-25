@@ -1,5 +1,5 @@
 /*!
-** \file    Source/TextDoc.h
+** \file    Source/Tokenizer.h
 ** \brief   Simple C++ document tokenizer
 \*****************************************************************************/
 #pragma once
@@ -43,6 +43,54 @@ public:
     sError1,
     sMax
   };
+
+  enum operator_t
+  {
+    opAssign,
+    opPlus,
+    opPlusPlus,
+    opPlusAssign,
+    opMinus,
+    opMinusMinus,
+    opMinusAssign,
+    opStar,
+    opStarAssign,
+    opSlash,
+    opSlashAssign,
+    opModulo,
+    opModuloAssign,
+    opEqual,
+    opUnequal,
+    opLT,
+    opLTorEqual,
+    opGT,
+    opGTorEqual,
+    opRefOf,
+    opMove,
+    opDeRef,
+    opRef,
+    opKomma,
+    opColon,
+    opSemicolon,
+    opQMark,
+    opNot,
+    opNotAssign,
+    opXor,
+    opXorAssign,
+    opOr,
+    opOrAssign,
+    opAnd,
+    opAndAssign,
+    opBoolOr,
+    opBoolAnd,
+    opNeg,
+    opBraceOpen,
+    opBraceClose,
+    opBracketOpen,
+    opBracketClose,
+    opParenthesisOpen,
+    opParenthesisClose,
+  };
   
   enum token_type_t
   {
@@ -52,15 +100,26 @@ public:
     tOperator,
     tComment,
     tPreProcessor,
-    tKeyword
+    tKeyword,
+  };
+
+  enum token_flags_t
+  {
+    flagTypeSpecifier         = 1 << 0,
+    flagStorageClassSpecifier = 1 << 1,
+    flagFunctionSpecifier     = 1 << 2,
   };
   
   struct token_t
   {
+    size_t line;
     size_t p0, p1, px;
-    token_type_t Type;
+    token_type_t type;
     std::string id;
+    operator_t op;
     Keywords keyword;
+    int error;
+    unsigned flags;
   };
 
   struct char_t
@@ -121,20 +180,9 @@ public:
 
   void push(const char_t& chr);
   void x(token_type_t Token);
+  void xOp(operator_t op);
   void z0(size_t pos);
   void z1();
   void z1(size_t pos);
   void zx(size_t pos);
 };
-
-// ============================================================================
-struct TokenizedFile
-{
-  std::vector<Tokenizer::state_t> initialStates;
-};
-
-// ============================================================================
-class TextDoc;
-
-// ============================================================================
-void updateTextDoc(TokenizedFile& file, const TextDoc& doc);

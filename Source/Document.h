@@ -6,6 +6,7 @@
 
 #include <Source/TextEdit.h>
 #include <Source/Tokenizer.h>
+#include <Source/TokenizedFile.h>
 
 // ============================================================================
 class TextDocument
